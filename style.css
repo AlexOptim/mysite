@@ -1,0 +1,150 @@
+*{
+	margin: 0;
+	padding: 0;
+	outline: 0;
+	border: none;
+}
+body{
+	background: #D2D2D2
+}
+header{
+	width: 100%;
+	height: 60px;
+	background: #0B9DED;
+}
+header a{
+	color: #000;
+}
+header h1{
+	margin-left: auto;
+	margin-right: auto;
+	display: table;
+	float: left;
+}
+ul.menu{
+	display: table;
+	width: 100%;
+}
+ul.menu li{
+	float: left;
+	display: table-row;
+}
+ul.menu li a{
+	display: block;
+	float: left;
+	margin: 5px;
+	text-decoration: none;
+	color: #F9810D;
+	font-family: Verdana;
+	font-size: 1.3em;
+	border: 1px solid rgba(255, 255, 255, 0);
+	padding: 3px;
+	border-radius: 3px;
+}
+ul.menu li a:hover{
+	border: 1px solid #F9810D;
+}
+#login{
+	float: right;
+	margin: 5px;
+}
+#example{
+	color: red;
+	width: 100%;
+	text-align: right;
+}
+nav{
+	background: #26334C;
+	width: 100%;
+	height: 40px;
+}
+#wraper{
+	width: 100%;
+	float: left;
+}
+section{
+	background: #fff;
+	width: 70%;
+	float: left;
+	margin: 10px;
+	padding: 10px;
+}
+.addFon{
+	background: #A9A9A9;
+}
+aside{
+	background: #26334C;
+	float: right;
+	width: 25%;
+	height: 800px;
+	margin: 10px;
+}
+.readMore{
+	float: right;
+}
+.article{
+	background: #fff;
+	width: 98%;
+	margin: 1%;
+	padding: 5px;
+	border: 1px solid #0983F9;
+	border-radius: 5px;
+}
+.lineFav{
+	background: #fff;
+	width: 98%;
+	margin: 1%;
+	padding: 5px;
+	border: 1px solid #0983F9;
+	border-radius: 5px;
+	/*white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;*/
+}
+.date{
+	font-style: italic;
+	color: rgb(255, 10, 10);
+}
+.autor{
+	font-style: italic;
+	color: rgb(47, 127, 8);
+	font-weight: 700;	
+}
+footer{
+	width: 100%;
+	height: 60px;
+	background: #005E91;
+	display: inline-block;
+}
+/*------------------*/
+.aButton{
+	text-decoration: none;
+	font-size: 1.5em;
+	color: #fff;
+	display: block;
+	margin: 10px;
+}
+.aButton:hover{
+	text-decoration: underline;;
+}
+/*------------------*/
+/*------------------*/
+.navigation {
+	clear: both;
+	width: 80%;
+	height: auto;
+	text-align: center;
+	margin: 20px 0 20px 50px;
+	padding-top: 15px;
+}
+.navigation .right, .navigation .left {width:230px; font-size:18px;text-align:right;margin:0;}
+.navigation .left {text-align:left;}
+.navigation a, .navigation a:visited {text-decoration:none;color:#939186;}
+.navigation a:hover {
+	color:#125DE5;
+	text-decoration:none;
+}
+.pagenavi {clear:both;display:block;font-size:14px;margin:0;padding:7px 0 7px 0;}
+.pagenavi a {clear: both;width:auto;font-size:14px;padding:3px 7px 3px 7px;background-color:#F3EFE6;}
+.pagenavi b {clear:both;width:auto;margin:0 6px 0 5px;text-decoration:none;}
+/*------------------*/
