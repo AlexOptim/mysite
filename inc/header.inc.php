@@ -24,6 +24,6 @@ if($_SERVER['REQUEST_METHOD'] == 'GET' and
 </header>
 <nav>
 <ul class="menu">
-	<li><a href="index.php">Home page</a></li> 
+	<li><a href="index.php">Home page</a></li>
 </ul> 
 </nav>

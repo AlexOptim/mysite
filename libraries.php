@@ -90,8 +90,9 @@ function addm(){
 		<form>
 		  Login: <input type=text name=login value='{$_SESSION['login']}'>
 		  Password: <input type=password name=passwd>
-		  <input type=submit name=go value='GO'>
+		  <input class='loginB' type=submit name=go value='GO'>
 		</form>
+    <a href='reg.php'>Registration</a>
 		</div>";
   	} else {
 		 $_SESSION['login']=$_GET['login']; 
@@ -104,10 +105,11 @@ function addm(){
 				<form>
 				  Login: <input type=text name=login value='{$_SESSION['login']}'>
 				  Password: <input type=password name=passwd>
-				  <input type=submit name=go value='GO'>
+				  <input class='loginB' type=submit name=go value='GO'>
 				</form>
+        <a href='reg.php'>Registration</a>
 				</div>";
-			echo "<div id='example'><br>Wrong input, try again<br></div>";
+			echo "<div id='example'><br>Wroning input, try again<br></div>";
 		    }
 			}
 		}
@@ -119,8 +121,9 @@ function addm(){
     <form>
       Login: <input type=text name=login>
       Password: <input type=password name=passwd>
-      <input type=submit name=go value='GO'>
+      <input class='loginB' type=submit name=go value='GO'>
     </form>
+    <a href='reg.php'>Registration</a>
     </div>";
   }else {
      $_SESSION['login']=$_GET['login']; 
@@ -133,10 +136,11 @@ function addm(){
     <form>
       Login: <input type=text name=login value='{$_SESSION['login']}'>
       Password: <input type=password name=passwd>
-      <input type=submit name=go value='GO'>
+      <input class='loginB' type=submit name=go value='GO'>
     </form>
+    <a href='reg.php'>Registration</a>
     </div>";
-      	echo "<div id='example'><br>Wrong input, try again<br></div>";
+      	echo "<div id='example'><br>Wroning input, try again<br></div>";
      }
    }   
   }       

@@ -9,17 +9,18 @@ body{
 }
 header{
 	width: 100%;
-	height: 60px;
+	height: 120px;
 	background: #0B9DED;
 }
 header a{
-	color: #000;
+
 }
 header h1{
-	margin-left: auto;
-	margin-right: auto;
+	margin-left: 20px;
 	display: table;
+	margin-top: 10px;
 	float: left;
+	color: #000;
 }
 ul.menu{
 	display: table;
@@ -47,6 +48,27 @@ ul.menu li a:hover{
 #login{
 	float: right;
 	margin: 5px;
+	width: 165px;
+}
+.loginB{
+	margin: 5px 0px;
+	width: 50px;
+	height: 20px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+.loginR{
+	margin: 5px 0px;
+	width: 120px;
+	height: 20px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+.loginB:hover,
+.loginR:hover{
+	background: #fff;
+	border: 1px solid #034DEC;;
+	box-shadow: inset 1px 1px 2px #034DEC;;
 }
 #example{
 	color: red;
@@ -71,6 +93,14 @@ section{
 }
 .addFon{
 	background: #A9A9A9;
+}
+.loginFon{
+	background: #A9A9A9;
+}
+#loginForm{
+	margin-left: auto;
+	margin-right: auto;
+	width: 200px;
 }
 aside{
 	background: #26334C;

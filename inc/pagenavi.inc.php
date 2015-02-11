@@ -1,7 +1,7 @@
 <?php
 $from = 0; 
 $col_article = 10; 
-$to = $from + $col_article; 
+$to = $from + 10; 
 $db = dbConnect();
 $query=$db->query("SELECT COUNT(*) as count FROM articles");
 $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -10,9 +10,9 @@ $members=$row['count'];
 if($members<=$col_article){
 	frontdbRead($db);
 }else{
-if (isset($_GET['from']) and isset($_GET['to'])){
+if (isset($_GET['from'])){
 	$from = $_GET['from'];
-	$to = $_GET['to'];
+	$to = $_GET['from']+10;
 }
 $col_str = $members / $col_article;
 $col_str=$members%$col_article;;
@@ -67,7 +67,7 @@ for($j = 0; $j < $col_str; $j++)
  $new_from = $j*$col_article;
  $new_to = $new_from + $col_article;
  if($from/$col_article != ($number-1)){
- 	echo '<a href="../mysite/index.php?from='.$new_from.'&to='.$new_to.'">'.$number.' </a>';
+ 	echo '<a href="../mysite/index.php?from='.$new_from.'">'.$number.' </a>';
  }else{
  	echo '<span>'.$number.' </span>';
  }
