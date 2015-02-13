@@ -67,13 +67,18 @@ function articleDbRead($idart, $db){
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
       if($r == 1){
-       if($roll == 'admin'){
         echo "
       <a href='index.php?idart=$idart&id=redagart'>Edit</a>
       <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
   			";
-       } 
-     } 
+     }else{
+        if($roll == 'admin'){
+          echo "
+        <a href='index.php?idart=$idart&id=redagart'>Edit</a>
+        <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+          ";
+        }
+       }
     }  	
     	echo "</div>"; 
     }

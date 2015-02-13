@@ -23,6 +23,10 @@ if ($r == 1){
 <body>
 <header>
   <a href="index.php"><h1>PHP & MySQL: My project</h1></a>
+  <div id='leng'>
+  	<a href="<?php echo $_SERVER['REQUEST_URI'];?>?leng=ukr"><img src="images/ukr.png" alt="ukr"></a>
+  	<a href="<?php echo $_SERVER['REQUEST_URI'];?>?leng=eng"><img src="images/eng.png" alt="eng"></a>
+  </div>
 	<?php
 	addm($db);
 	?>
@@ -32,4 +36,4 @@ if ($r == 1){
 	<li><a href="index.php">Home page</a></li>
 	<li><a href="profillist.php">Profils</a></li>
 </ul> 
-</nav>
+</nav><?php //print_r($_SERVER);?>

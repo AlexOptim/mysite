@@ -232,3 +232,8 @@ footer{
 .blocked ol{
 	margin-left: 20px;
 }
+#leng{
+	margin: 5px;
+	float: right;
+	cursor: pointer;
+}

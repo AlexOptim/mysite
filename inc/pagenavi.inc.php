@@ -59,12 +59,17 @@ for($z = 0; $z < ($to - $from); $z++)
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
       if($r == 1){ 
-        if($roll == 'admin'){
         echo "
   			<a href='index.php?idart=$idart&id=redagart'>Edit</a>
         <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
     			";
-         }  
+       }else{
+        if($roll == 'admin'){
+          echo "
+        <a href='index.php?idart=$idart&id=redagart'>Edit</a>
+        <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+          ";
+        }
        }
      }
     echo "<a href='page.php?idart=$idart' class='readMore'>Read More</a><br>";
