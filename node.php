@@ -29,7 +29,7 @@ include 'inc/pagenavi.inc.php';
     ?> 
   </section>
   <aside>
-       <?php addArt();?>
+       <?php addArt($db);?>
   </aside>
 </div>
 <?php

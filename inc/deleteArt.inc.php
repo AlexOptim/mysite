@@ -11,7 +11,10 @@ $stmt->execute();
 ?>
   </section>
   <aside>
-       <?php addArt();?>
+       <?php 
+        $db = dbConnect();
+       addArt($db);
+       ?>
   </aside>
 </div>
 

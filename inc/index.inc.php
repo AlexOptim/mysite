@@ -1,12 +1,11 @@
 <div id="wraper">
   <section>
-      <?php
-      //$db = dbConnect();
-      //frontdbRead($db);
-      ?> 
 <?php include 'inc/pagenavi.inc.php';?>
   </section>
   <aside>
-       <?php addArt();?>
+       <?php 
+        $db = dbConnect();
+       addArt($db);
+       ?>
   </aside>
 </div>

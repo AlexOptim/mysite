@@ -127,9 +127,6 @@ aside{
 	padding: 5px;
 	border: 1px solid #0983F9;
 	border-radius: 5px;
-	/*white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;*/
 }
 .date{
 	font-style: italic;
@@ -167,14 +164,61 @@ footer{
 	margin: 20px 0 20px 50px;
 	padding-top: 15px;
 }
-.navigation .right, .navigation .left {width:230px; font-size:18px;text-align:right;margin:0;}
-.navigation .left {text-align:left;}
-.navigation a, .navigation a:visited {text-decoration:none;color:#939186;}
+.navigation .right, 
+.navigation .left {
+	width:230px; 
+	font-size:18px;
+	text-align:right;
+	margin:0;
+}
+.navigation .left {
+	text-align:left;
+}
+.navigation a,
+.navigation a:visited {
+	text-decoration:none;
+	color:#939186;
+}
 .navigation a:hover {
 	color:#125DE5;
 	text-decoration:none;
 }
-.pagenavi {clear:both;display:block;font-size:14px;margin:0;padding:7px 0 7px 0;}
-.pagenavi a {clear: both;width:auto;font-size:14px;padding:3px 7px 3px 7px;background-color:#F3EFE6;}
-.pagenavi b {clear:both;width:auto;margin:0 6px 0 5px;text-decoration:none;}
+.pagenavi {
+	clear:both;
+	display:block;
+	font-size:14px;
+	margin:0;
+	padding:7px 0 7px 0;
+}
+.pagenavi a {
+	clear: both;
+	width:auto;
+	font-size:14px;
+	padding:3px 7px 3px 7px;
+	background-color:#F3EFE6;
+}
+.pagenavi b {
+	clear:both;
+	width:auto;
+	margin:0 6px 0 5px;
+	text-decoration:none;
+}
 /*------------------*/
+/*--profil---------*/
+.p150x150{
+	width: 150px;
+	float: left;
+	margin: 10px 10px 10px 0px;
+	border: 1px solid;
+	border-radius: 5px;
+}
+.profButtons{
+
+}
+.profButtons a{
+	margin-left: 10px;
+}
+.prof{
+	float: right;
+}
+/*--profil---------*/

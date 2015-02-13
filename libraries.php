@@ -1,5 +1,5 @@
 <?php
- # підключаємося до бази даних 
+ # підключаємося до бази даних
 function dbConnect(){
 	$dbUser='root';
 	$dbPass='111';
@@ -18,6 +18,31 @@ function dbAdd($title, $body, $date, $autor, $db){
 	$insertId = $db->lastInsertId();
 	//echo $insertId;    
 }
+function userReg($login, $password, $email, $avatar, $dateReg, $dateLog, $Roll, $db){
+  $p = 0;  
+  foreach($db->query("SELECT * FROM users") as $row) {
+    if($row['login'] != $login){
+      if($row['email'] != $email){
+        }else{
+          $p = 1;
+          echo "This email already exists!";
+        }
+      }else{
+        $p = 1;
+        echo "This login already exists!";
+        break;
+      }
+  }
+  if ($p == 0){
+    $result = $db->exec("INSERT INTO users (login, password, email, avatar, dateReg, dateLog, Roll) 
+                      values ('$login', '$password', '$email', '$avatar', '$dateReg', '$dateLog', '$Roll')");
+  $_SESSION['login'] = $login;
+  $_SESSION['passwd'] = $password;
+  echo "You registered";
+  header("refresh: 2; url='index.php'");
+  exit; 
+  }
+}
 function dbRedag($title, $body, $date, $autor, $idart, $db){
 	$stmt = $db->prepare("UPDATE articles SET title=?, body=?, date=?, autor=?  WHERE id=?");
 	$stmt->execute(array($title, $body, $date, $autor, $idart));
@@ -31,9 +56,12 @@ function articleDbRead($idart, $db){
     	<span class='date'>{$row['date']}</span>
     	<span class='autor'>{$row['autor']}</span><br>
     	{$row['body']}<br>";
+      $r = 0;
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-       if ($_SESSION['login']=="admin" && 
-          $_SESSION['passwd']=="123456789"){
+       foreach($db->query("SELECT * FROM users") as $row) {
+    if($row['login'] == $_SESSION['login'] 
+    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
+      if ($r == 1){
         echo "
       <a href='index.php?idart=$idart&id=redagart'>Edit</a>
       <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
@@ -67,88 +95,29 @@ function frontdbRead($db){
   	<span class='date'>{$row['date']}</span>
   	<span class='autor'>{$row['autor']}</span><br>
   	$bod<br>";
-  if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-     if ($_SESSION['login']=="admin" && 
-        $_SESSION['passwd']=="123456789"){
+      $r = 0;
+    if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
+       foreach($db->query("SELECT * FROM users") as $row) {
+    if($row['login'] == $_SESSION['login'] 
+    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
+      if ($r == 1){
         echo "
-  			<a href='index.php?idart=$idart&id=redagart'>Edit</a>
-        <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
-    			";
-         }  
-     }
+      <a href='index.php?idart=$idart&id=redagart'>Edit</a>
+      <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+        ";
+       }  
+    } 
     echo "<a href='page.php?idart=$idart' class='readMore'>Read More</a><br>";
   	echo "</div>"; 
   }
 }
-function addm(){
-  if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-  if ($_SESSION['login']=="admin" && $_SESSION['passwd']=="123456789"){}
-  else {
-	 if (!isset($_GET['go'])){
-		echo "
-		<div id='login'>
-		<form>
-		  Login: <input type=text name=login value='{$_SESSION['login']}'>
-		  Password: <input type=password name=passwd>
-		  <input class='loginB' type=submit name=go value='GO'>
-		</form>
-    <a href='reg.php'>Registration</a>
-		</div>";
-  	} else {
-		 $_SESSION['login']=$_GET['login']; 
-		 $_SESSION['passwd']=$_GET['passwd']; 
-		  if ($_GET['login']=="admin" && 
-			  $_GET['passwd']=="123456789") {
-		} else {
-			echo "
-				<div id='login'>
-				<form>
-				  Login: <input type=text name=login value='{$_SESSION['login']}'>
-				  Password: <input type=password name=passwd>
-				  <input class='loginB' type=submit name=go value='GO'>
-				</form>
-        <a href='reg.php'>Registration</a>
-				</div>";
-			echo "<div id='example'><br>Wroning input, try again<br></div>";
-		    }
-			}
-		}
-  }                       
-  else {
-  if (!isset($_GET['go'])){
-    echo "
-    <div id='login'>
-    <form>
-      Login: <input type=text name=login>
-      Password: <input type=password name=passwd>
-      <input class='loginB' type=submit name=go value='GO'>
-    </form>
-    <a href='reg.php'>Registration</a>
-    </div>";
-  }else {
-     $_SESSION['login']=$_GET['login']; 
-     $_SESSION['passwd']=$_GET['passwd']; 
-      if ($_GET['login']=="admin" && 
-          $_GET['passwd']=="123456789") {       
-      }else {
-      echo "
-    <div id='login'>
-    <form>
-      Login: <input type=text name=login value='{$_SESSION['login']}'>
-      Password: <input type=password name=passwd>
-      <input class='loginB' type=submit name=go value='GO'>
-    </form>
-    <a href='reg.php'>Registration</a>
-    </div>";
-      	echo "<div id='example'><br>Wroning input, try again<br></div>";
-     }
-   }   
-  }       
-}
-function addArt(){
+function addArt($db){
+      $r = 0;
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-     if ($_SESSION['login']=="admin" && 
-          $_SESSION['passwd']=="123456789"){
+       foreach($db->query("SELECT * FROM users") as $row) {
+    if($row['login'] == $_SESSION['login'] 
+    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
+      if ($r == 1){
       echo "<a href='index.php?id=articleAdd' class='aButton'>Add article</a>";
      }
   }
@@ -158,4 +127,170 @@ function cleanStr($data){
 	return trim(strip_tags($data));
 }
 //ф-я для очищення і захисту введених даних
+function addm($db){
+  if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
+    $r = 0;
+   foreach($db->query("SELECT * FROM users") as $row) {
+      if($row['login'] == $_SESSION['login'] 
+      && $row['password'] == $_SESSION['passwd']){
+        $r = 1;
+        $user = $row['login'];
+        $idart = $row['id'];
+      }}
+        if ($r == 1){
+      echo "
+      <div id='login'>
+      Profil: <a href='profil.php?idart=$idart'>$user</a>
+      <a href='logout.php'>Logout</a>
+      </div>";
+        }
+    else {
+     if (!isset($_GET['go'])){
+      echo "
+      <div id='login'>
+      <form>
+        Login: <input type=text name=login value='{$_SESSION['login']}'>
+        Password: <input type=password name=passwd>
+        <input class='loginB' type=submit name=go value='GO'>
+      </form>
+      <a href='reg.php'>Registration</a>
+      </div>";
+      } else {
+       $_SESSION['login']=$_GET['login']; 
+       $_SESSION['passwd']=$_GET['passwd']; 
+        $r = 0;
+     foreach($db->query("SELECT * FROM users") as $row) {
+        if($row['login'] == $_SESSION['login'] 
+        && $row['password'] == $_SESSION['passwd']){$r = 1;
+        $idart = $row['id'];
+        $user = $row['login'];
+        }}
+          if ($r == 1){
+                  echo "
+      <div id='login'>
+      Profil: <a href='profil.php?idart=$idart'>$user</a>
+      <a href='logout.php'>Logout</a>
+      </div>";
+          }
+    else {
+        echo "
+          <div id='login'>
+          <form>
+            Login: <input type=text name=login value='{$_SESSION['login']}'>
+            Password: <input type=password name=passwd>
+            <input class='loginB' type=submit name=go value='GO'>
+          </form>
+          <a href='reg.php'>Registration</a>
+          </div>";
+        echo "<div id='example'><br>Wroning input, try again<br></div>";
+          }
+        }
+      }
+  }                       
+  else {
+if (!isset($_GET['go'])){
+  echo "
+  <div id='login'>
+  <form>
+    Login: <input type=text name=login>
+    Password: <input type=password name=passwd>
+    <input class='loginB' type=submit name=go value='GO'>
+  </form>
+  <a href='reg.php'>Registration</a>
+  </div>";
+}else {
+   $_SESSION['login']=$_GET['login']; 
+   $_SESSION['passwd']=$_GET['passwd']; 
+   $r = 0;
+     foreach($db->query("SELECT * FROM users") as $row) {
+        if($row['login'] == $_SESSION['login'] 
+        && $row['password'] == $_SESSION['passwd']){
+        $r = 1;
+        $idart = $row['id'];
+        $user = $row['login'];
+      }
+    }
+          if ($r == 1){
+                  echo "
+      <div id='login'>
+      Profil: <a href='profil.php?idart=$idart'>$user</a>
+      <a href='logout.php'>Logout</a>
+      </div>";
+          }
+  else {
+    echo "
+  <div id='login'>
+  <form>
+    Login: <input type=text name=login value='{$_SESSION['login']}'>
+    Password: <input type=password name=passwd>
+    <input class='loginB' type=submit name=go value='GO'>
+  </form>
+  <a href='reg.php'>Registration</a>
+  </div>";
+      echo "<div id='example'><br>Wroning input, try again<br></div>";
+   }
+ }   
+}       
+}
+function writeOllProf($db){
+ echo "<div class='article'>";
+ foreach($db->query("SELECT id, login, email FROM users") as $row) {
+    $idart = $row['id'];
+  echo "
+      <a href='profil.php?idart=$idart'>{$row['login']}</a>";
+      $r = 0;
+    if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
+       foreach($db->query("SELECT * FROM users") as $row) {
+    if($row['login'] == $_SESSION['login'] 
+    && $row['password'] == $_SESSION['passwd'] 
+    && $row['Roll'] == 'admin'){$r = 1;}}
+      if ($r == 1){
+        echo "
+      <span class='prof'>
+      <a href='profilredag.php?idart=$idart&id=redagart'>Edit</a>
+      <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+      </span><br>";
+       }  
+    }   
+
+ }
+ echo "</div>"; 
+}
+function writeProf($idart, $db){
+ foreach($db->query("SELECT * FROM users WHERE id = $idart") as $row) {
+echo "
+    <h2>{$row['login']}</h2>
+    <img class='p150x150' src='{$row['avatar']}'>
+    <p>Surname: {$row['surname']}</p>
+    <p>Name: {$row['name']}</p>
+    <p>Date of registration: {$row['dateReg']}</p>
+    <p>Last login date: {$row['dateLog']}</p>";
+    $email = $row['email'];
+   $r = 0;
+  if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
+     foreach($db->query("SELECT * FROM users") as $row) {
+  if($row['login'] == $_SESSION['login'] 
+  && $row['password'] == $_SESSION['passwd']){
+    $r = 1;
+    $idu=$row['id'];
+    $rol = $row['Roll'];
+  }}
+    if ($r == 1){
+      echo "
+    <p>Email: $email</p><br>";
+    if($idu == $idart or $rol == 'admin'){
+      echo "
+    <span class='profButtons'>
+      <a href='profilredag.php?idart=$idart&id=redagart'>Edit profile</a>
+      <a href='index.php?idart=$idart&id=deleteart'>Delete profile</a>
+    </span>";}
+     }  
+  }   
+ }
+}
+function profRedag($login, $avatar, $surname, $name, $email, $idart, $db){
+  $stmt = $db->prepare("UPDATE users SET login=?, avatar=?, surname=?, name=?, email=?  WHERE id=?");
+  $stmt->execute(array($login, $avatar, $surname, $name, $email, $idart));
+  $affected_rows = $stmt->rowCount();
+}
 ?>

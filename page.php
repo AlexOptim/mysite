@@ -10,7 +10,10 @@ include 'inc/header.inc.php';
 	?>
   </section>
   <aside>
-       <?php addArt();?>
+       <?php 
+        $db = dbConnect();
+       addArt($db);
+       ?>
   </aside>
 </div>
 <?php

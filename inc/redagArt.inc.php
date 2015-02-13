@@ -18,7 +18,10 @@ foreach($db->query("SELECT * FROM articles WHERE id = $idart") as $row) {
 ?>
   </section>
   <aside>
-       <?php addArt();?>
+       <?php 
+        $db = dbConnect();
+       addArt($db);
+       ?>
   </aside>
 </div>
 
