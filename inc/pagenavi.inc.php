@@ -40,20 +40,32 @@ for($z = 0; $z < ($to - $from); $z++)
   	} else {
   		$bod = $row['body'];
   	}
+    $avtor = $row['autor'];
+    $idavt = chekId($avtor, $db);
   	echo "
   	<div class='lineFav'>
   	<a href='page.php?idart=$idart'>{$row['title']}</a><br>
   	<span class='date'>{$row['date']}</span>
-  	<span class='autor'>{$row['autor']}</span><br>
+    <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
   	$bod<br>";
-  if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-     if ($_SESSION['login']=="admin" && 
-        $_SESSION['passwd']=="123456789"){
+      $r = 0;
+    if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
+       foreach($db->query("SELECT * FROM users") as $row) {
+    if($row['login'] == $_SESSION['login'] 
+    && $row['password'] == $_SESSION['passwd'] 
+    && $row['login'] == $avtor){
+      $r = 1; 
+  }}
+  $l = $_SESSION['login'];
+  $roll = chekRoll($l, $db);
+      if($r == 1){ 
+        if($roll == 'admin'){
         echo "
   			<a href='index.php?idart=$idart&id=redagart'>Edit</a>
         <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
     			";
          }  
+       }
      }
     echo "<a href='page.php?idart=$idart' class='readMore'>Read More</a><br>";
   	echo "</div>";

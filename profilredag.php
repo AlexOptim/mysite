@@ -15,8 +15,20 @@ include 'inc/header.inc.php';
   echo "
   <form action='profil.php' enctype='multipart/form-data' method='POST'>
   <p>Login:<br>
-  <input name='login' type='text' size='15' maxlength='15' value='{$row['login']}'></p>
-  <p>Avatar:<br> 
+  <input name='login' type='text' size='15' maxlength='15' value='{$row['login']}'></p>";
+  $log = $_SESSION['login'];
+  if( chekRoll($log, $db) == 'admin'){
+  echo "<p>Roll now: {$row['Roll']}<br>
+  Select new roll: <br>
+  <input type='hidden' name='roll' value='{$row['Roll']}'>
+  <input type='radio' name='roll' value='user'> user<Br>
+  <input type='radio' name='roll' value='redactor'> redactor<Br>
+  <input type='radio' name='roll' value='bloked'> bloked<Br>
+  <input type='radio' name='roll' value='admin'> admin<Br></p>";
+ }else{
+  echo "<input name='roll' type='hidden' value='{$row['Roll']}'>";
+ }
+  echo "<p>Avatar:<br> 
   <input name='avatar' type='file' multiple accept='image/*,image/jpeg,image/png' value='{$row['avatar']}'></p>
   <input name='avatarstab' type='hidden' value='{$row['avatar']}'>
   <p>Surname:<br>

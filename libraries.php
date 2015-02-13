@@ -50,23 +50,30 @@ function dbRedag($title, $body, $date, $autor, $idart, $db){
 }
 function articleDbRead($idart, $db){
 	foreach($db->query("SELECT * FROM articles WHERE id=$idart") as $row) {
-    	echo "
+    	$avtor = $row['autor'];
+      $idavt = chekId($avtor, $db);
+      echo "
     	<div class='article'>
     	{$row['title']}<br>
     	<span class='date'>{$row['date']}</span>
-    	<span class='autor'>{$row['autor']}</span><br>
+      <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
     	{$row['body']}<br>";
       $r = 0;
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
        foreach($db->query("SELECT * FROM users") as $row) {
     if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
-      if ($r == 1){
+    && $row['password'] == $_SESSION['passwd']
+    && $row['login'] == $avtor){$r = 1;}}
+  $l = $_SESSION['login'];
+  $roll = chekRoll($l, $db);
+      if($r == 1){
+       if($roll == 'admin'){
         echo "
       <a href='index.php?idart=$idart&id=redagart'>Edit</a>
       <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
   			";
-       }  
+       } 
+     } 
     }  	
     	echo "</div>"; 
     }
@@ -89,18 +96,23 @@ function frontdbRead($db){
   	} else {
   		$bod = $row['body'];
   	}
-  	echo "
-  	<div class='lineFav'>
-  	<a href='page.php?idart=$idart'>{$row['title']}</a><br>
-  	<span class='date'>{$row['date']}</span>
-  	<span class='autor'>{$row['autor']}</span><br>
-  	$bod<br>";
+     $avtor = $row['avtor'];
+     $idavt = chekId($avtor, $db);
+      echo "
+      <div class='article'>
+      {$row['title']}<br>
+      <span class='date'>{$row['date']}</span>
+      <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
+      {$row['body']}<br>";
       $r = 0;
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
        foreach($db->query("SELECT * FROM users") as $row) {
     if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
-      if ($r == 1){
+    && $row['password'] == $_SESSION['passwd']
+    && $row['login'] == $avtor){$r = 1;}}
+  $l = $_SESSION['login'];
+  $roll = chekRoll($l, $db);
+      if ($r == 1 or $roll == 'admin'){
         echo "
       <a href='index.php?idart=$idart&id=redagart'>Edit</a>
       <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
@@ -116,15 +128,24 @@ function addArt($db){
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
        foreach($db->query("SELECT * FROM users") as $row) {
     if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
-      if ($r == 1){
+    && $row['password'] == $_SESSION['passwd']){$r=1;}}
+  if($r == 1){
+  $l = $_SESSION['login'];
+  $roll = chekRoll($l, $db);
+      if ($roll == 'redactor' or $roll == 'admin'){
       echo "<a href='index.php?id=articleAdd' class='aButton'>Add article</a>";
      }
+   }
   }
 }
 //ф-я для очищення і захисту введених даних
 function cleanStr($data){
 	return trim(strip_tags($data));
+}
+function addDateLog($idus, $dateL, $db){
+  $stmt = $db->prepare("UPDATE users SET dateLog=?  WHERE id=?");
+  $stmt->execute(array($dateL, $idus));
+  $affected_rows = $stmt->rowCount();
 }
 //ф-я для очищення і захисту введених даних
 function addm($db){
@@ -136,14 +157,22 @@ function addm($db){
         $r = 1;
         $user = $row['login'];
         $idart = $row['id'];
+        $roll = $row['Roll'];
+        $dateL = date('d-m-Y');
       }}
         if ($r == 1){
+          if($roll == 'bloked'){
+           include 'bOut.php';
+           exit;
+        }else{
+      addDateLog($idart, $dateL, $db);
       echo "
       <div id='login'>
       Profil: <a href='profil.php?idart=$idart'>$user</a>
       <a href='logout.php'>Logout</a>
       </div>";
-        }
+      }
+    }
     else {
      if (!isset($_GET['go'])){
       echo "
@@ -157,15 +186,22 @@ function addm($db){
       </div>";
       } else {
        $_SESSION['login']=$_GET['login']; 
-       $_SESSION['passwd']=$_GET['passwd']; 
+       $_SESSION['passwd']=md5($_GET['passwd']); 
         $r = 0;
      foreach($db->query("SELECT * FROM users") as $row) {
         if($row['login'] == $_SESSION['login'] 
         && $row['password'] == $_SESSION['passwd']){$r = 1;
         $idart = $row['id'];
         $user = $row['login'];
-        }}
-          if ($r == 1){
+        $roll = $row['Roll'];
+        $dateL = date('d-m-Y');
+      }}
+        if ($r == 1)
+        if($roll == 'bloked'){
+          include 'bOut.php';
+          exit;
+        }else{
+      addDateLog($idart, $dateL, $db);
                   echo "
       <div id='login'>
       Profil: <a href='profil.php?idart=$idart'>$user</a>
@@ -200,7 +236,7 @@ if (!isset($_GET['go'])){
   </div>";
 }else {
    $_SESSION['login']=$_GET['login']; 
-   $_SESSION['passwd']=$_GET['passwd']; 
+   $_SESSION['passwd']=md5($_GET['passwd']); 
    $r = 0;
      foreach($db->query("SELECT * FROM users") as $row) {
         if($row['login'] == $_SESSION['login'] 
@@ -208,9 +244,15 @@ if (!isset($_GET['go'])){
         $r = 1;
         $idart = $row['id'];
         $user = $row['login'];
-      }
-    }
-          if ($r == 1){
+        $roll = $row['Roll'];
+        $dateL = date('d-m-Y');
+      }}
+        if ($r == 1)          
+          if($roll == 'bloked'){
+           include 'bOut.php';
+          exit;
+        }else{
+      addDateLog($idart, $dateL, $db);
                   echo "
       <div id='login'>
       Profil: <a href='profil.php?idart=$idart'>$user</a>
@@ -248,7 +290,7 @@ function writeOllProf($db){
         echo "
       <span class='prof'>
       <a href='profilredag.php?idart=$idart&id=redagart'>Edit</a>
-      <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+      <a href='index.php?idart=$idart&id=deleteprof'>Delete</a>
       </span><br>";
        }  
     }   
@@ -266,6 +308,7 @@ echo "
     <p>Date of registration: {$row['dateReg']}</p>
     <p>Last login date: {$row['dateLog']}</p>";
     $email = $row['email'];
+    $rolUser = $row['Roll'];
    $r = 0;
   if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
      foreach($db->query("SELECT * FROM users") as $row) {
@@ -273,24 +316,36 @@ echo "
   && $row['password'] == $_SESSION['passwd']){
     $r = 1;
     $idu=$row['id'];
-    $rol = $row['Roll'];
   }}
     if ($r == 1){
       echo "
     <p>Email: $email</p><br>";
+      $log = $_SESSION['login'];
+      $rol = chekRoll($log, $db);
     if($idu == $idart or $rol == 'admin'){
       echo "
+    <p>Roll: $rolUser</p><br>
     <span class='profButtons'>
       <a href='profilredag.php?idart=$idart&id=redagart'>Edit profile</a>
-      <a href='index.php?idart=$idart&id=deleteart'>Delete profile</a>
+      <a href='index.php?idart=$idart&id=deleteprof'>Delete</a>
     </span>";}
      }  
   }   
  }
 }
-function profRedag($login, $avatar, $surname, $name, $email, $idart, $db){
-  $stmt = $db->prepare("UPDATE users SET login=?, avatar=?, surname=?, name=?, email=?  WHERE id=?");
-  $stmt->execute(array($login, $avatar, $surname, $name, $email, $idart));
+function profRedag($login, $avatar, $surname, $name, $email, $roll, $idart, $db){
+  $stmt = $db->prepare("UPDATE users SET login=?, avatar=?, surname=?, name=?, email=?, Roll=?  WHERE id=?");
+  $stmt->execute(array($login, $avatar, $surname, $name, $email, $roll, $idart));
   $affected_rows = $stmt->rowCount();
+}
+function chekRoll($log, $db){
+  foreach($db->query("SELECT * FROM users WHERE login = '$log'") as $row) {
+  return $rol = $row['Roll'];
+ }
+}
+function chekId($log, $db){
+  foreach($db->query("SELECT * FROM users WHERE login = '$log'") as $row) {
+  return $id = $row['id'];
+ }
 }
 ?>

@@ -222,3 +222,13 @@ footer{
 	float: right;
 }
 /*--profil---------*/
+.blocked h1{
+	text-align: center;
+	color: red;
+}
+.blocked h2{
+	text-align: center;
+}
+.blocked ol{
+	margin-left: 20px;
+}

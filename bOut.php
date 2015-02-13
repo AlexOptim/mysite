@@ -3,5 +3,5 @@ session_start ('local');
 $_SESSION['login'] = '';
 $_SESSION['passwd'] = '';
 session_destroy();
-header("Location: index.php"); 
+header("Location: bloketOut.php"); 
 ?>

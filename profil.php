@@ -18,6 +18,7 @@ include 'inc/header.inc.php';
     $name=$_POST['name']; 
     $email=$_POST['email'];
     $avatarstab=$_POST['avatarstab']; 
+    $roll = $_POST['roll'];
     @$tupe = $_POST['tupe'];
     @$idart = $_POST['idart'];
        // Проверяем загружен ли файл
@@ -32,7 +33,7 @@ include 'inc/header.inc.php';
    }
 
      if($tupe == 'r'){
-      profRedag($login, $avatar, $surname, $name, $email, $idart, $db);
+      profRedag($login, $avatar, $surname, $name, $email, $roll, $idart, $db);
      }
 
 

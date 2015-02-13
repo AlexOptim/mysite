@@ -21,8 +21,8 @@ include 'libraries.php';
   <?php
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	  $login = $_POST['login'];
-	  $password = $_POST['password'];
-	  $passwordRep = $_POST['passwordRep'];
+	  $password = md5($_POST['password']);
+	  $passwordRep = md5($_POST['passwordRep']);
 	  $email = $_POST['email'];
 	  $avatar = $_POST['avatar'];
 	  $dateReg = $_POST['dateReg'];
