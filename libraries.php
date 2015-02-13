@@ -361,5 +361,10 @@ function mt($word){
   return $word = $row["$ses"];
   }
 }
+function saveLengSistem($original, $ukr){
+  $db = dbConnect();
+ $result = $db->exec("INSERT INTO sistemLeng (original, ukr, eng) 
+                      values ('$original', '$ukr', '$original')");
+}
 /*************for translite******************/
 ?>
