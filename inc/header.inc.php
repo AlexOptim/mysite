@@ -1,5 +1,14 @@
 <?php
 	session_start();
+	if(!isset($_SESSION['leng'])){
+		$_SESSION['leng'] = 'ukr';
+	}else{
+	if($_SERVER['REQUEST_METHOD'] == 'GET'){
+		if(isset($_GET['leng'])){
+				$_SESSION['leng'] = $_GET['leng'];
+			}
+		}
+	}
 include 'libraries.php';
 $r = 0;
 $db = dbConnect();
@@ -24,9 +33,14 @@ if ($r == 1){
 <header>
   <a href="index.php"><h1>PHP & MySQL: My project</h1></a>
   <div id='leng'>
-  	<a href="<?php echo $_SERVER['REQUEST_URI'];?>?leng=ukr"><img src="images/ukr.png" alt="ukr"></a>
-  	<a href="<?php echo $_SERVER['REQUEST_URI'];?>?leng=eng"><img src="images/eng.png" alt="eng"></a>
-  </div>
+  	<?php echo $_SESSION['leng'];
+  	if($_SERVER['QUERY_STRING'] != ''){
+   	echo "<a href='{$_SERVER['REQUEST_URI']}&leng=ukr'><img src='images/ukr.png' alt='ukr'></a>
+  	<a href='{$_SERVER['REQUEST_URI']}&leng=eng'><img src='images/eng.png' alt='eng'></a>"; 		
+  		}else{
+  	echo "<a href='{$_SERVER['REQUEST_URI']}?leng=ukr'><img src='images/ukr.png' alt='ukr'></a>
+  	<a href='{$_SERVER['REQUEST_URI']}?leng=eng'><img src='images/eng.png' alt='eng'></a>
+  </div>";}?>
 	<?php
 	addm($db);
 	?>
@@ -36,4 +50,6 @@ if ($r == 1){
 	<li><a href="index.php">Home page</a></li>
 	<li><a href="profillist.php">Profils</a></li>
 </ul> 
-</nav><?php //print_r($_SERVER);?>
+</nav>
+
+<?php //print_r($_SERVER);?>

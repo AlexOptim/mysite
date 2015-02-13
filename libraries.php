@@ -353,4 +353,13 @@ function chekId($log, $db){
   return $id = $row['id'];
  }
 }
+/*************for translite******************/
+function mt($word){
+  $ses = $_SESSION['leng'];
+  $db = dbConnect();
+  foreach($db->query("SELECT original, $ses FROM sistemLeng WHERE original = '$word'") as $row) {
+  return $word = $row["$ses"];
+  }
+}
+/*************for translite******************/
 ?>
