@@ -8,7 +8,7 @@ include 'inc/header.inc.php';
 		case 'redagart':
 			include 'inc/redagArt.inc.php'; break;
 		case 'deleteart':
-			include 'inc/redagArt.inc.php'; break;
+			include 'inc/deleteArt.inc.php'; break;
 		case 'deleteprof':
 			include 'inc/deleteProfil.inc.php'; break;
 		default: include 'inc/index.inc.php';

@@ -25,11 +25,11 @@ function userReg($login, $password, $email, $avatar, $dateReg, $dateLog, $Roll, 
       if($row['email'] != $email){
         }else{
           $p = 1;
-          echo "This email already exists!";
+          echo mt('This email address is already in use'), "!";
         }
       }else{
         $p = 1;
-        echo "This login already exists!";
+        echo mt('This login already exists'), "!";
         break;
       }
   }
@@ -38,7 +38,7 @@ function userReg($login, $password, $email, $avatar, $dateReg, $dateLog, $Roll, 
                       values ('$login', '$password', '$email', '$avatar', '$dateReg', '$dateLog', '$Roll')");
   $_SESSION['login'] = $login;
   $_SESSION['passwd'] = $password;
-  echo "You registered";
+  echo mt('You registered'), "!";
   header("refresh: 2; url='index.php'");
   exit; 
   }
@@ -68,14 +68,14 @@ function articleDbRead($idart, $db){
   $roll = chekRoll($l, $db);
       if($r == 1){
         echo "
-      <a href='index.php?idart=$idart&id=redagart'>Edit</a>
-      <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+      <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+      <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
   			";
      }else{
         if($roll == 'admin'){
           echo "
-        <a href='index.php?idart=$idart&id=redagart'>Edit</a>
-        <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+        <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+        <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
           ";
         }
        }
@@ -119,12 +119,12 @@ function frontdbRead($db){
   $roll = chekRoll($l, $db);
       if ($r == 1 or $roll == 'admin'){
         echo "
-      <a href='index.php?idart=$idart&id=redagart'>Edit</a>
-      <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+      <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+      <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
         ";
        }  
     } 
-    echo "<a href='page.php?idart=$idart' class='readMore'>Read More</a><br>";
+    echo "<a href='page.php?idart=$idart' class='readMore'>", mt('Read More'), "</a><br>";
   	echo "</div>"; 
   }
 }
@@ -138,7 +138,7 @@ function addArt($db){
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
       if ($roll == 'redactor' or $roll == 'admin'){
-      echo "<a href='index.php?id=articleAdd' class='aButton'>Add article</a>";
+      echo "<a href='index.php?id=articleAdd' class='aButton'>", mt('Add article'), "</a>";
      }
    }
   }
@@ -173,8 +173,8 @@ function addm($db){
       addDateLog($idart, $dateL, $db);
       echo "
       <div id='login'>
-      Profil: <a href='profil.php?idart=$idart'>$user</a>
-      <a href='logout.php'>Logout</a>
+      ", mt('Profil'), ": <a href='profil.php?idart=$idart'>$user</a>
+      <a href='logout.php'>", mt('Logout'), "</a>
       </div>";
       }
     }
@@ -183,11 +183,11 @@ function addm($db){
       echo "
       <div id='login'>
       <form>
-        Login: <input type=text name=login value='{$_SESSION['login']}'>
-        Password: <input type=password name=passwd>
-        <input class='loginB' type=submit name=go value='GO'>
+        ", mt('Login'), ": <input type=text name=login value='{$_SESSION['login']}'>
+        ", mt('Password'), ": <input type=password name=passwd>
+        <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
       </form>
-      <a href='reg.php'>Registration</a>
+      <a href='reg.php'>", mt('Registration'), "</a>
       </div>";
       } else {
        $_SESSION['login']=$_GET['login']; 
@@ -209,21 +209,21 @@ function addm($db){
       addDateLog($idart, $dateL, $db);
                   echo "
       <div id='login'>
-      Profil: <a href='profil.php?idart=$idart'>$user</a>
-      <a href='logout.php'>Logout</a>
+      ", mt('Profil'), ": <a href='profil.php?idart=$idart'>$user</a>
+      <a href='logout.php'>", mt('Logout'), "</a>
       </div>";
           }
     else {
         echo "
           <div id='login'>
           <form>
-            Login: <input type=text name=login value='{$_SESSION['login']}'>
-            Password: <input type=password name=passwd>
-            <input class='loginB' type=submit name=go value='GO'>
+            ", mt('Login'), ": <input type=text name=login value='{$_SESSION['login']}'>
+            ", mt('Password'), ": <input type=password name=passwd>
+            <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
           </form>
-          <a href='reg.php'>Registration</a>
+          <a href='reg.php'>", mt('Registration'), "</a>
           </div>";
-        echo "<div id='example'><br>Wroning input, try again<br></div>";
+        echo "<div id='example'><br>", mt('Wrong input, try again'), "<br></div>";
           }
         }
       }
@@ -233,11 +233,11 @@ if (!isset($_GET['go'])){
   echo "
   <div id='login'>
   <form>
-    Login: <input type=text name=login>
-    Password: <input type=password name=passwd>
-    <input class='loginB' type=submit name=go value='GO'>
+    ", mt('Login'), ": <input type=text name=login>
+    ", mt('Password'), ": <input type=password name=passwd>
+    <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
   </form>
-  <a href='reg.php'>Registration</a>
+  <a href='reg.php'>", mt('Registration'), "</a>
   </div>";
 }else {
    $_SESSION['login']=$_GET['login']; 
@@ -260,21 +260,21 @@ if (!isset($_GET['go'])){
       addDateLog($idart, $dateL, $db);
                   echo "
       <div id='login'>
-      Profil: <a href='profil.php?idart=$idart'>$user</a>
-      <a href='logout.php'>Logout</a>
+      ", mt('Profil'), ": <a href='profil.php?idart=$idart'>$user</a>
+      <a href='logout.php'>", mt('Logout'), "</a>
       </div>";
           }
   else {
     echo "
   <div id='login'>
   <form>
-    Login: <input type=text name=login value='{$_SESSION['login']}'>
-    Password: <input type=password name=passwd>
-    <input class='loginB' type=submit name=go value='GO'>
+    ", mt('Login'), ": <input type=text name=login value='{$_SESSION['login']}'>
+    ", mt('Password'), ": <input type=password name=passwd>
+    <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
   </form>
-  <a href='reg.php'>Registration</a>
+  <a href='reg.php'>", mt('Registration'), "</a>
   </div>";
-      echo "<div id='example'><br>Wroning input, try again<br></div>";
+      echo "<div id='example'><br>", mt('Wrong input, try again'), "<br></div>";
    }
  }   
 }       
@@ -294,8 +294,8 @@ function writeOllProf($db){
       if ($r == 1){
         echo "
       <span class='prof'>
-      <a href='profilredag.php?idart=$idart&id=redagart'>Edit</a>
-      <a href='index.php?idart=$idart&id=deleteprof'>Delete</a>
+      <a href='profilredag.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+      <a href='index.php?idart=$idart&id=deleteprof'>", mt('Delete'), "</a>
       </span><br>";
        }  
     }   
@@ -308,10 +308,10 @@ function writeProf($idart, $db){
 echo "
     <h2>{$row['login']}</h2>
     <img class='p150x150' src='{$row['avatar']}'>
-    <p>Surname: {$row['surname']}</p>
-    <p>Name: {$row['name']}</p>
-    <p>Date of registration: {$row['dateReg']}</p>
-    <p>Last login date: {$row['dateLog']}</p>";
+    <p>",mt('Surname') ,": {$row['surname']}</p>
+    <p>",mt('Name') ,": {$row['name']}</p>
+    <p>",mt('Date of registration') ,": {$row['dateReg']}</p>
+    <p>",mt('Last login date') ,": {$row['dateLog']}</p>";
     $email = $row['email'];
     $rolUser = $row['Roll'];
    $r = 0;
@@ -329,10 +329,10 @@ echo "
       $rol = chekRoll($log, $db);
     if($idu == $idart or $rol == 'admin'){
       echo "
-    <p>Roll: $rolUser</p><br>
+    <p>", mt('Roll'), ": $rolUser</p><br>
     <span class='profButtons'>
-      <a href='profilredag.php?idart=$idart&id=redagart'>Edit profile</a>
-      <a href='index.php?idart=$idart&id=deleteprof'>Delete</a>
+      <a href='profilredag.php?idart=$idart&id=redagart'>", mt('Edit profile'), "</a>
+      <a href='index.php?idart=$idart&id=deleteprof'>", mt('Delete'), "</a>
     </span>";}
      }  
   }   

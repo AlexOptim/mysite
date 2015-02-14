@@ -60,19 +60,19 @@ for($z = 0; $z < ($to - $from); $z++)
   $roll = chekRoll($l, $db);
       if($r == 1){ 
         echo "
-  			<a href='index.php?idart=$idart&id=redagart'>Edit</a>
-        <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+  			<a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+        <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
     			";
        }else{
         if($roll == 'admin'){
           echo "
-        <a href='index.php?idart=$idart&id=redagart'>Edit</a>
-        <a href='index.php?idart=$idart&id=deleteart'>Delete</a>
+        <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+        <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
           ";
         }
        }
      }
-    echo "<a href='page.php?idart=$idart' class='readMore'>Read More</a><br>";
+    echo "<a href='page.php?idart=$idart' class='readMore'>", mt('Read More'), "</a><br>";
   	echo "</div>";
 }
 

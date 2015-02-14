@@ -31,7 +31,7 @@ if ($r == 1){
 </head>
 <body>
 <header>
-  <a href="index.php"><h1>PHP & MySQL: My project</h1></a>
+  <a href="index.php"><h1><?php echo mt('Site title');?></h1></a>
   <div id='leng'>
   	<?php echo $_SESSION['leng'];
   	if($_SERVER['QUERY_STRING'] != ''){
@@ -41,14 +41,15 @@ if ($r == 1){
   	echo "<a href='{$_SERVER['REQUEST_URI']}?leng=ukr'><img src='images/ukr.png' alt='ukr'></a>
   	<a href='{$_SERVER['REQUEST_URI']}?leng=eng'><img src='images/eng.png' alt='eng'></a>
   </div>";}?>
+  </div>
 	<?php
 	addm($db);
 	?>
 </header>
 <nav>
 <ul class="menu">
-	<li><a href="index.php">Home page</a></li>
-	<li><a href="profillist.php">Profils</a></li>
+	<li><a href="index.php"><?php echo mt('Menu tab1');?></a></li>
+	<li><a href="profillist.php"><?php echo mt('Menu tab2');?></a></li>
 </ul> 
 </nav>
 
