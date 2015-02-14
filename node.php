@@ -26,7 +26,6 @@ include 'inc/header.inc.php';
     //add on DB
     }
       $db = dbConnect();
-      frontdbRead($db);
 include 'inc/pagenavi.inc.php';
     ?> 
   </section>

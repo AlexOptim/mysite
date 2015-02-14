@@ -46,7 +46,7 @@ for($z = 0; $z < ($to - $from); $z++)
     $idavt = chekId($avtor, $db);
   	echo "
   	<div class='lineFav'>
-  	<a href='page.php?idart=$idart'>{$row[$title]}</a><br>
+  	<h3><a class='th3' href='page.php?idart=$idart'>{$row[$title]}</a></h3>
   	<span class='date'>{$row['date']}</span>
     <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
   	$bod<br>";

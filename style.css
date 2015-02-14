@@ -117,7 +117,7 @@ aside{
 	width: 98%;
 	margin: 1%;
 	padding: 5px;
-	border: 1px solid #0983F9;
+	border: 1px dotted #0983F9;
 	border-radius: 5px;
 }
 .lineFav{
@@ -125,17 +125,31 @@ aside{
 	width: 98%;
 	margin: 1%;
 	padding: 5px;
-	border: 1px solid #0983F9;
+	border: 1px dotted #0983F9;
 	border-radius: 5px;
+}
+.lineFav a{
+	text-decoration: none;
+}
+.lineFav a:hover{
+	text-decoration: underline;
 }
 .date{
 	font-style: italic;
 	color: rgb(255, 10, 10);
 }
-.autor{
-	font-style: italic;
-	color: rgb(47, 127, 8);
-	font-weight: 700;	
+.th3{
+	color: #323232;
+}
+#comments{
+	background: #C7CDDA;
+	border: 1px dotted #0983F9;
+	border-radius: 5px;
+	margin-left: 10px;
+	padding: 5px;
+}
+#comments h2{
+	text-align: center;
 }
 footer{
 	width: 100%;

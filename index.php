@@ -11,6 +11,8 @@ include 'inc/header.inc.php';
 			include 'inc/deleteArt.inc.php'; break;
 		case 'deleteprof':
 			include 'inc/deleteProfil.inc.php'; break;
+		case 'deletecom':
+			include 'inc/deleteCom.inc.php'; break;
 		default: include 'inc/index.inc.php';
 	}
 ?>
