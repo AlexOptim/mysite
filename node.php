@@ -7,8 +7,10 @@ include 'inc/header.inc.php';
   $db = dbConnect();
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
   
-    $title=$_POST['title'];
-    $body=$_POST['body']; 
+    $titleeng=$_POST['titleeng'];
+    $titleukr=$_POST['titleukr'];
+    $bodyeng=$_POST['bodyeng']; 
+    $bodyukr=$_POST['bodyukr']; 
     $createData = date('d-m-Y');
     @$tupe = $_POST['tupe'];
     @$idart = $_POST['idart'];
@@ -16,10 +18,10 @@ include 'inc/header.inc.php';
     $db = dbConnect();
     switch ($tupe){ 
       case 'r':
-        dbRedag($title, $body, $createData, $_SESSION['login'], $idart, $db);
+        dbRedag($titleeng, $bodyeng, $titleukr, $bodyukr, $createData, $_SESSION['login'], $idart, $db);
         break;
       default:
-        dbAdd($title, $body, $createData, $_SESSION['login'], $db);
+        dbAdd($titleeng, $bodyeng, $titleukr, $bodyukr, $createData, $_SESSION['login'], $db);
     }
     //add on DB
     }

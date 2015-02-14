@@ -13,8 +13,9 @@ function dbConnect(){
 	}
 }
  # підключаємося до бази даних 
-function dbAdd($title, $body, $date, $autor, $db){
-	$result = $db->exec("INSERT INTO articles (title, body, date, autor) values ('$title', '$body', '$date', '$autor')");
+function dbAdd($titleeng, $bodyeng, $titleukr, $bodyukr, $date, $autor, $db){
+	$result = $db->exec("INSERT INTO articles (titleeng, bodyeng, titleukr, bodyukr, date, autor) 
+                        values ('$titleeng', '$bodyeng', '$titleukr', '$bodyukr', '$date', '$autor')");
 	$insertId = $db->lastInsertId();
 	//echo $insertId;    
 }
@@ -43,36 +44,37 @@ function userReg($login, $password, $email, $avatar, $dateReg, $dateLog, $Roll, 
   exit; 
   }
 }
-function dbRedag($title, $body, $date, $autor, $idart, $db){
-	$stmt = $db->prepare("UPDATE articles SET title=?, body=?, date=?, autor=?  WHERE id=?");
-	$stmt->execute(array($title, $body, $date, $autor, $idart));
+function dbRedag($titleeng, $bodyeng, $titleukr, $bodyukr, $date, $autor, $idart, $db){
+	$stmt = $db->prepare("UPDATE articles SET titleeng=?, bodyeng=?, titleukr=?, bodyukr=?, date=?, autor=?  WHERE id=?");
+	$stmt->execute(array($titleeng, $bodyeng, $titleukr, $bodyukr, $date, $autor, $idart));
 	$affected_rows = $stmt->rowCount();
 }
 function articleDbRead($idart, $db){
 	foreach($db->query("SELECT * FROM articles WHERE id=$idart") as $row) {
     	$avtor = $row['autor'];
       $idavt = chekId($avtor, $db);
+      $title = 'title'.$_SESSION['leng'];
+      $body = 'body'.$_SESSION['leng'];
       echo "
     	<div class='article'>
-    	{$row['title']}<br>
+    	{$row[$title]}<br>
     	<span class='date'>{$row['date']}</span>
       <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
-    	{$row['body']}<br>";
+    	{$row[$body]}<br>";
       $r = 0;
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
        foreach($db->query("SELECT * FROM users") as $row) {
     if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']
-    && $row['login'] == $avtor){$r = 1;}}
+    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
-      if($r == 1){
+      if($r == 1 && $_SESSION['login'] == $avtor){ 
         echo "
-      <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
-      <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
-  			";
-     }else{
-        if($roll == 'admin'){
+        <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+        <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
+          ";
+       }else{
+        if($r == 1 && $roll == 'admin'){
           echo "
         <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
         <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
@@ -86,43 +88,51 @@ function articleDbRead($idart, $db){
 function frontdbRead($db){
 	foreach($db->query('SELECT * FROM articles order by id DESC') as $row) {
   	$idart = $row['id'];
-  	if (strlen($row['body'])>150){
-  	$bo = substr($row['body'], 0, 150);
+    $title = 'title'.$_SESSION['leng'];
+    $body = 'body'.$_SESSION['leng'];
+  	if (strlen($row[$body])>150){
+  	$bo = substr($row[$body], 0, 150);
   	$i = strlen($bo)-1;
   	$k = 0;
     	while($i>0){
-    		if ($bo[$i] == '.'){
+    		if ($bo[$i] == '.' or $bo[$i] == ' '){
     			$k = $i+1;
     			break;
     		}
     		$i --;
     	}
-    $bod = substr($row['body'], 0, $k).'..';
+    $bod = substr($row[$body], 0, $k).'...';
   	} else {
-  		$bod = $row['body'];
+  		$bod = $row[$body];
   	}
-     $avtor = $row['avtor'];
-     $idavt = chekId($avtor, $db);
+     $autor = $row['autor'];
+     $idavt = chekId($autor, $db);
       echo "
       <div class='article'>
-      {$row['title']}<br>
+      {$row[$title]}<br>
       <span class='date'>{$row['date']}</span>
       <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
-      {$row['body']}<br>";
+      {$row[$body]}<br>";
       $r = 0;
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
        foreach($db->query("SELECT * FROM users") as $row) {
     if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']
-    && $row['login'] == $avtor){$r = 1;}}
+    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
-      if ($r == 1 or $roll == 'admin'){
+      if($r == 1 && $_SESSION['login'] == $avtor){ 
         echo "
-      <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
-      <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
-        ";
-       }  
+        <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+        <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
+          ";
+       }else{
+        if($r == 1 && $roll == 'admin'){
+          echo "
+        <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+        <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
+          ";
+        }
+       } 
     } 
     echo "<a href='page.php?idart=$idart' class='readMore'>", mt('Read More'), "</a><br>";
   	echo "</div>"; 
@@ -361,10 +371,29 @@ function mt($word){
   return $word = $row["$ses"];
   }
 }
-function saveLengSistem($original, $ukr){
+function saveLengSistem($original, $eng, $ukr){
   $db = dbConnect();
- $result = $db->exec("INSERT INTO sistemLeng (original, ukr, eng) 
-                      values ('$original', '$ukr', '$original')");
+  $stmt = $db->prepare("UPDATE sistemLeng SET eng=?, ukr=? WHERE original=?");
+  $stmt->execute(array($eng, $ukr, $original));
+  $affected_rows = $stmt->rowCount();
+}
+function loadLengSistem(){
+  $db = dbConnect();
+  $i = 0;
+  echo "<form action='' method='POST'>
+   <p>_________Original_____________________eng_____________________________ukr<br></p>";
+  foreach($db->query("SELECT * FROM sistemLeng") as $row) {
+    echo "
+   <p><label class='lengLabel'>{$row['original']}</label>
+    <input type='hidden'  name='original", $i, "' value='",$row['original'] ,"'>
+    <input type='text' size='30' name='eng", $i, "' value='",$row['eng'] ,"'>................
+    <input type='text' size='30' name='ukr", $i, "' value='",$row['ukr'] ,"'></p>";
+    $i ++;
+  }
+  echo "
+  <input type='hidden'  name='i' value='",$i ,"'>
+  <p><input type='submit' value='", mt('Save'), "'></p>
+  </form>";
 }
 /*************for translite******************/
 ?>

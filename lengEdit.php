@@ -3,16 +3,21 @@ include 'inc/header.inc.php';
 ?>
 <div id="wraper">
   <section class="addFon">
-  <form action='' method='POST'>
-   <p>Original:<br><input type='text' size='30' name='original'></p>
-   <p>ukr:<br><input type='text' size='30' name='ukr'></p>
-   <p><input type='submit' value='Save'></p>
-  </form>
   <?php
-  if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $original = $_POST['original'];
-    $ukr = $_POST['ukr'];
-   saveLengSistem($original, $ukr); 
+  loadLengSistem();
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      $i = $_POST['i'];
+      $j = 0;
+    while($j<$i){
+          $orj = 'original'.$j;
+          $engj = 'eng'.$j;
+          $ukrj = 'ukr'.$j;
+          $original = $_POST[$orj];
+          $eng = $_POST[$engj];
+          $ukr = $_POST[$ukrj];
+          saveLengSistem($original, $eng, $ukr); 
+          $j ++;
+    }
   }
   ?>
   </section>

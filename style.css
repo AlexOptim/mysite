@@ -237,3 +237,16 @@ footer{
 	float: right;
 	cursor: pointer;
 }
+/*********artticles redag & add ****************/
+#dualArt{
+
+}
+.Art{
+
+}
+/*********artticles redag & add ****************/
+.lengLabel{
+	display: block;
+	float: left;
+	width: 230px;
+}

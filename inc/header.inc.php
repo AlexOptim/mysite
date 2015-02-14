@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	if(!isset($_SESSION['leng'])){
-		$_SESSION['leng'] = 'ukr';
+		$_SESSION['leng'] = 'eng';
 	}else{
 	if($_SERVER['REQUEST_METHOD'] == 'GET'){
 		if(isset($_GET['leng'])){
@@ -11,11 +11,13 @@
 	}
 include 'libraries.php';
 $r = 0;
+$ml = '';
 $db = dbConnect();
 if($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_SESSION['login']) and isset($_SESSION['passwd'])){
 	   foreach($db->query("SELECT * FROM users") as $row) {
     		if($row['login'] == $_SESSION['login'] && $row['password'] == $_SESSION['passwd']){
       		$r = 1;
+      		$ml = $_SESSION['login'];
   		}
 	}
 }
@@ -50,6 +52,11 @@ if ($r == 1){
 <ul class="menu">
 	<li><a href="index.php"><?php echo mt('Menu tab1');?></a></li>
 	<li><a href="profillist.php"><?php echo mt('Menu tab2');?></a></li>
+	<?php
+	if(chekRoll($ml, $db) == 'admin'){
+	echo "<li><a href='lengEdit.php'>", mt('Menu tab3'), "</a></li>";
+	}
+	?>
 </ul> 
 </nav>
 

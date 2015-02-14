@@ -23,28 +23,30 @@ for($z = 0; $z < ($to - $from); $z++)
 {
  $row = $result->fetch();
   	$idart = $row['id'];
-  	if($row['title']!=null)
+    $title = 'title'.$_SESSION['leng'];
+    $body = 'body'.$_SESSION['leng'];
+  	if($row[$title]!=null)
   	{
-  	if (strlen($row['body'])>150){
-  	$bo = substr($row['body'], 0, 150);
+  	if (strlen($row[$body])>150){
+  	$bo = substr($row[$body], 0, 150);
   	$i = strlen($bo)-1;
   	$k = 0;
     	while($i>0){
-    		if ($bo[$i] == '.'){
+    		if ($bo[$i] == '.' or $bo[$i] == ' '){
     			$k = $i+1;
     			break;
     		}
     		$i --;
     	}
-    $bod = substr($row['body'], 0, $k).'..';
+    $bod = substr($row[$body], 0, $k).'...';
   	} else {
-  		$bod = $row['body'];
+  		$bod = $row[$body];
   	}
     $avtor = $row['autor'];
     $idavt = chekId($avtor, $db);
   	echo "
   	<div class='lineFav'>
-  	<a href='page.php?idart=$idart'>{$row['title']}</a><br>
+  	<a href='page.php?idart=$idart'>{$row[$title]}</a><br>
   	<span class='date'>{$row['date']}</span>
     <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
   	$bod<br>";
@@ -52,19 +54,18 @@ for($z = 0; $z < ($to - $from); $z++)
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
        foreach($db->query("SELECT * FROM users") as $row) {
     if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd'] 
-    && $row['login'] == $avtor){
+    && $row['password'] == $_SESSION['passwd']){
       $r = 1; 
   }}
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
-      if($r == 1){ 
+      if($r == 1 && $_SESSION['login'] == $avtor){ 
         echo "
   			<a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
         <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
     			";
        }else{
-        if($roll == 'admin'){
+        if($r == 1 && $roll == 'admin'){
           echo "
         <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
         <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
