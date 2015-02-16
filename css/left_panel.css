@@ -1,0 +1,64 @@
+
+#right_small_div {
+			position: fixed; /* Координаты мальнького блока не должны меняться при прокрутке страницы */
+			top: 300px;
+			left: 0px;
+			background: #56A0DF;
+			-webkit-transition-duration: 1s; /*Время плавного перемещения блока в сек.*/
+			-moz-transition-duration: 1s;
+			-o-transition-duration: 1s;
+			transition-duration: 1s;
+			-webkit-border-radius: 0 5px 5px 0; /*Делаем закругленные углы у блока*/
+			-moz-border-radius: 0 5px 5px 0;
+			border-radius: 0 5px 5px 0;
+		}
+		
+		#main_big_div {
+			position: absolute; /* Координаты большого блока будут отсчитываться (и зависеть) от координат его родителя - маленького блока */
+			left: -257px;
+			height: 172px;
+			background: rgba(86, 157, 223, 1);
+			-webkit-transition-duration: 1s;
+			-moz-transition-duration: 1s;
+			-o-transition-duration: 1s;
+			transition-duration: 1s;
+			-webkit-border-radius: 5px 5px 5px 5px;
+			-moz-border-radius: 5px 5px 5px 5px;
+			border-radius: 5px 5px 5px 5px;
+		}
+		
+		#main_big_div form, #main_big_div input, #main_big_div textarea {
+			font-size: 14px;
+			font-family: Arial;
+			color:black;	
+		}
+		
+		#main_big_div form {
+			margin: 10px 0px 0px 10px;
+		}
+						
+		#main_big_div input {
+			vertical-align: middle;
+		}
+		
+		#main_big_div input[type=text] {
+			width: 230px;
+		}
+		
+		#main_big_div textarea {
+			width: 230px;
+			height: 150px;
+			resize: none; /* Запрещаем пользователю возможность изменять ширину и высоту текстового поля */
+		}
+		
+		#SlideButton {
+			margin: 6px 6px 6px 6px;
+		}
+		#SlideButton:hover {
+			cursor: pointer; /* При наведении курсора мыши, он будет в виде руки с вытянутым указательным пальцем */
+		}
+.buttonForm{
+	border-radius: 3px;
+	padding: 5px;
+	margin-right: 5px;
+}

@@ -46,7 +46,7 @@ for($z = 0; $z < ($to - $from); $z++)
     $idavt = chekId($avtor, $db);
   	echo "
   	<div class='lineFav'>
-  	<h3><a class='th3' href='page.php?idart=$idart'>{$row[$title]}</a></h3>
+  	<h3><a class='th3' href='page.php?idart=$idart&leng={$_SESSION['leng']}'>{$row[$title]}</a></h3>
   	<span class='date'>{$row['date']}</span>
     <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
   	$bod<br>";
@@ -73,7 +73,7 @@ for($z = 0; $z < ($to - $from); $z++)
         }
        }
      }
-    echo "<a href='page.php?idart=$idart' class='readMore'>", mt('Read More'), "</a><br>";
+    echo "<a href='page.php?leng={$_SESSION['leng']}'&idart=$idart' class='readMore'>", mt('Read More'), "</a><br>";
   	echo "</div>";
 }
 
@@ -85,7 +85,7 @@ for($j = 0; $j < $col_str; $j++)
  $new_from = $j*$col_article;
  $new_to = $new_from + $col_article;
  if($from/$col_article != ($number-1)){
- 	echo '<a href="../mysite/index.php?from='.$new_from.'">'.$number.' </a>';
+ 	echo "<a href='../mysite/index.php?leng={$_SESSION['leng']}'&from=$new_from>$number</a>";
  }else{
  	echo '<span>'.$number.' </span>';
  }

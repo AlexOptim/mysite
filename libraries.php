@@ -59,8 +59,10 @@ function articleDbRead($idart, $db){
     	<div class='article'>
     	<h2>{$row[$title]}</h2>
     	<span class='date'>{$row['date']}</span>
-      <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
-    	{$row[$body]}<br>";
+      <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span>
+      <span class='raitings'>", ratingRead($idart, $db), "</span><br>
+    	{$row[$body]}<br>
+      ";
       $r = 0;
     if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
        foreach($db->query("SELECT * FROM users") as $row) {
@@ -81,7 +83,11 @@ function articleDbRead($idart, $db){
           ";
         }
        }
-    }  	
+        if($r == 1){
+        ratingWrite($idart, $db);
+      }
+    }  
+
     	echo "</div>";
       if($r == 1){
         echo "
@@ -98,7 +104,12 @@ function articleDbRead($idart, $db){
         </p></form>
         ", showComments($idart, $_SESSION['leng']),"
       </div>"; 
-    }
+    }else{
+	echo "<div id='comments'>
+      <h2>", mt('Comments'), "</h2>
+      ", showComments($idart, $_SESSION['leng']),"
+      </div>";
+	}
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
       if( isset($_POST['titlecomment']) or isset($_POST['bodycomment'])){
       $titlecomment = $_POST['titlecomment'];
@@ -111,14 +122,98 @@ function articleDbRead($idart, $db){
   }
   }
 }
+/********************ratings****************************/
+function ratingRead($idart, $db){
+  $query=$db->query("SELECT COUNT(*) as count FROM ratings WHERE idarticles='$idart'");
+  $query->setFetchMode(PDO::FETCH_ASSOC);
+  $row=$query->fetch();
+  $countrating=$row['count'];
+  if($countrating == 0){
+    echo mt('For this item is no vote'), ".";
+  }else{
+  $k = 0;
+  foreach($db->query("SELECT * FROM ratings WHERE idarticles=$idart") as $row) {
+    $k = $k+$row['ratingart'];
+  }
+  $k = $k/$countrating;
+  echo mt('The average score of the material'), ": <i style='color: red'>", round($k, 3), "</i> ";
+  echo mt('How many votes'), ": <i style='color: red'>$countrating</i>";
+  }
+}
+function ratingWrite($idart, $db){
+  $aut = 0;
+  $l = $_SESSION['login'];
+  $roll = chekRoll($l, $db);
+  foreach($db->query("SELECT * FROM ratings WHERE idarticles=$idart") as $row) {
+    if($_SESSION['login'] == $row['ratingautor']){
+      $aut = 1;
+      $id = $row['id'];
+      $ocz = $row['ratingart'];
+    }
+  }
+  $query=$db->query("SELECT COUNT(*) as count2 FROM ratings WHERE idarticles='$idart'");
+  $query->setFetchMode(PDO::FETCH_ASSOC);
+  $row=$query->fetch();
+  $cou=$row['count2'];
+  if($aut == 1){
+    echo "<br><div class='hr'></div>";
+    echo mt('Your grade material'), ": $ocz";
+    echo "&nbsp&nbsp&nbsp<a href='index.php?idrating=$id&id=deleterait'>", mt('Delete'), "</a>";
+  }elseif($roll == 'admin' and $cou !=0){
+    echo "<br><div class='hr'></div>";
+    echo mt('Delete all ratings'), " - ";
+    echo "&nbsp&nbsp&nbsp<a href='index.php?idartr=$idart&id=deleteraitall'>", mt('Delete'), "</a>";
+  }else{
+  echo "
+<br><div class='hr'></div>
+<form action='' method='POST'>
+<span>
+1&nbsp&nbsp&nbsp2&nbsp&nbsp3&nbsp&nbsp&nbsp4&nbsp&nbsp5<br>
+<input type='radio' name='rat' value='1'checked>
+<input type='radio' name='rat' value='2'>
+<input type='radio' name='rat' value='3'>
+<input type='radio' name='rat' value='4'>
+<input type='radio' name='rat' value='5'>
+<input class='loginR' type='submit' name='submit' value='", mt('Vote'), "'>
+</span>
+</form>
+  ";
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['rat'])) {
+  $rat = $_POST['rat'];
+  $log = $_SESSION['login'];
+  echo mt('Thank you for your vote'), "!";
+  $result = $db->exec("INSERT INTO ratings (idarticles, ratingart, ratingautor) 
+                      values ('$idart', '$rat', '$log')");
+
+    }
+  }
+}
+/********************ratings****************************/
 function addComents($titlecomment, $bodycomment, $ids, $autorcomment, $datecomment, $leng){
   $db = dbConnect();
   $result = $db->exec("INSERT INTO comments (ids, titlecomment, bodycomment, autorcomment, datecomment, lenguage) 
                         values ('$ids', '$titlecomment', '$bodycomment', '$autorcomment', '$datecomment', '$leng')");
 }
-function showComments($idart, $leng){
-  $db = dbConnect();
-	foreach($db->query("SELECT * FROM comments WHERE ids='$idart' AND lenguage='$leng' order by id DESC") as $row) {
+function showComments($idcoment, $leng){
+	$fcom = 0; 
+	$col_article = 10; 
+	$to = $fcom + $col_article; 
+	$db = dbConnect();
+	$query=$db->query("SELECT COUNT(*) as count FROM comments WHERE ids='$idcoment' AND lenguage='$leng' order by id DESC");
+	$query->setFetchMode(PDO::FETCH_ASSOC);
+	$row=$query->fetch();
+	$members=$row['count'];
+	if($members<=$col_article){
+		showAllComments($idcoment, $leng);
+	}else{
+	if (isset($_GET['fcom'])){
+		$fcom = $_GET['fcom'];
+		$to = $_GET['fcom']+$col_article;
+	}
+	$col_str=$members%$col_article;
+	$col_str=$members-$col_str;
+	$col_str=($col_str/$col_article)+1;
+	foreach($db->query("SELECT * FROM comments WHERE ids='$idcoment' AND lenguage='$leng' order by id DESC limit $fcom, $to") as $row){
   	if (strlen($row['titlecomment']) == 0 or $row['titlecomment'] == ' '){
   	$bo = substr($row['bodycomment'], 0, 15);
   	$i = strlen($bo)-1;
@@ -134,7 +229,7 @@ function showComments($idart, $leng){
   	} else {
   		$title = $row['titlecomment'];
   	}
-    $idavt = chekId($_SESSION['login']);
+    $idavt = chekId($row['autorcomment']);
     $id = $row['id'];
       echo "
       <div class='article'>
@@ -142,14 +237,62 @@ function showComments($idart, $leng){
       <span class='date'>{$row['datecomment']}</span>
       <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autorcomment']}</a></span><br>
       {$row['bodycomment']}<br>";
-      $r = 0;
-    if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-       foreach($db->query("SELECT * FROM users") as $row) {
-    if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
+    if ($_SESSION['reg'] == 1){ 
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
-      if($r == 1 && $roll == 'admin'){ 
+      if($roll == 'admin'){ 
+        echo "
+        <a href='index.php?idcom=$id&id=deletecom'>", mt('Delete'), "</a>
+          ";
+       } 
+    } 
+   echo "</div>"; 
+	}
+	echo "<div class='navigation'>";
+	for($j = 0; $j < $col_str; $j++)
+	{
+	 $number = $j + 1;
+	 $new_from = $j*$col_article;
+	 $new_to = $new_from + $col_article;
+	 if($fcom/$col_article != ($number-1)){
+		echo "<a href='../mysite/page.php?idart=$idcoment&fcom=$new_from'>$number</a>";
+	 }else{
+		echo '<span>'.$number.' </span>';
+	 }
+	}
+	echo "</div>";
+	}
+}
+function showAllComments($idcoment, $leng){
+  $db = dbConnect();
+	foreach($db->query("SELECT * FROM comments WHERE ids='$idcoment' AND lenguage='$leng' order by id DESC") as $row) {
+  	if (strlen($row['titlecomment']) == 0 or $row['titlecomment'] == ' '){
+  	$bo = substr($row['bodycomment'], 0, 15);
+  	$i = strlen($bo)-1;
+  	$k = 0;
+    	while($i>0){
+    		if ($bo[$i] == ' '){
+    			$k = $i+1;
+    			break;
+    		}
+    		$i --;
+    	}
+    $title = substr($bo, 0, $k).'...';
+  	} else {
+  		$title = $row['titlecomment'];
+  	}
+    $idavt = chekId($row['autorcomment']);
+    $id = $row['id'];
+      echo "
+      <div class='article'>
+      <h3>$title</h3>
+      <span class='date'>{$row['datecomment']}</span>
+      <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autorcomment']}</a></span><br>
+      {$row['bodycomment']}<br>";
+    if ($_SESSION['reg'] == 1){ 
+  $l = $_SESSION['login'];
+  $roll = chekRoll($l, $db);
+      if($roll == 'admin'){ 
         echo "
         <a href='index.php?idcom=$id&id=deletecom'>", mt('Delete'), "</a>
           ";
@@ -278,6 +421,7 @@ if (!isset($_POST['go'])){
         if($row['login'] == $_SESSION['login'] 
         && $row['password'] == $_SESSION['passwd']){
         $r = 1;
+        $_SESSION['reg'] = 1;
         $idart = $row['id'];
         $user = $row['login'];
         $roll = $row['Roll'];
@@ -394,8 +538,7 @@ function mt($word){
   return $word = $row["$ses"];
   }
 }
-function saveLengSistem($original, $eng, $ukr){
-  $db = dbConnect();
+function saveLengSistem($original, $eng, $ukr, $db){
   $stmt = $db->prepare("UPDATE sistemLeng SET eng=?, ukr=? WHERE original=?");
   $stmt->execute(array($eng, $ukr, $original));
   $affected_rows = $stmt->rowCount();

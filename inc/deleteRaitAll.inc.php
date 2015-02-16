@@ -1,9 +1,9 @@
 <?php
-echo mt('Comment delete'), "!<br>
+echo mt('All ratings delete'), "!<br>
 <a href='{$_SERVER['HTTP_REFERER']}'>", mt('Back'), "</a>";
-$id = $_GET['idcom'];
+$id = $_GET['idartr'];
 $db = dbConnect();
-$stmt = $db->prepare("DELETE FROM comments WHERE id=:id");
+$stmt = $db->prepare("DELETE FROM ratings WHERE idarticles=:id");
 $stmt->bindValue(':id', $id, PDO::PARAM_STR);
 $stmt->execute();
 

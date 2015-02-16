@@ -86,9 +86,10 @@ nav{
 }
 section{
 	background: #fff;
-	width: 70%;
+	width: 68%;
 	float: left;
 	margin: 10px;
+	margin-left: 31px;
 	padding: 10px;
 }
 .addFon{
@@ -264,3 +265,11 @@ footer{
 	float: left;
 	width: 230px;
 }
+.raitings{
+	float: right;
+	color: green;
+}
+.hr{
+	width: 100%;
+	border-top: 1px dotted #0983F9;
+	}

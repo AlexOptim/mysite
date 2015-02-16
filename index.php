@@ -13,6 +13,10 @@ include 'inc/header.inc.php';
 			include 'inc/deleteProfil.inc.php'; break;
 		case 'deletecom':
 			include 'inc/deleteCom.inc.php'; break;
+		case 'deleterait':
+			include 'inc/deleteRait.inc.php'; break;
+		case 'deleteraitall':
+			include 'inc/deleteRaitAll.inc.php'; break;
 		default: include 'inc/index.inc.php';
 	}
 ?>

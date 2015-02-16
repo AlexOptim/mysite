@@ -8,6 +8,7 @@ include 'inc/header.inc.php';
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
       $i = $_POST['i'];
       $j = 0;
+      $db = dbConnect();
     while($j<$i){
           $orj = 'original'.$j;
           $engj = 'eng'.$j;
@@ -15,7 +16,7 @@ include 'inc/header.inc.php';
           $original = $_POST[$orj];
           $eng = $_POST[$engj];
           $ukr = $_POST[$ukrj];
-          saveLengSistem($original, $eng, $ukr); 
+          saveLengSistem($original, $eng, $ukr, $db); 
           $j ++;
     }
   }
