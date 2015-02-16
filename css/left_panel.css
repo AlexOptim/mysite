@@ -16,7 +16,7 @@
 		#main_big_div {
 			position: absolute; /* Координаты большого блока будут отсчитываться (и зависеть) от координат его родителя - маленького блока */
 			left: -257px;
-			height: 172px;
+			height: 228px;
 			background: rgba(86, 157, 223, 1);
 			-webkit-transition-duration: 1s;
 			-moz-transition-duration: 1s;
@@ -53,6 +53,8 @@
 		
 		#SlideButton {
 			margin: 6px 6px 6px 6px;
+			word-wrap: break-word;
+			width: 8px;
 		}
 		#SlideButton:hover {
 			cursor: pointer; /* При наведении курсора мыши, он будет в виде руки с вытянутым указательным пальцем */

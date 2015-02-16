@@ -4,7 +4,6 @@ include 'inc/header.inc.php';
 <div id="wraper">
   <section class="addFon">
   <?php
-  loadLengSistem();
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
       $i = $_POST['i'];
       $j = 0;
@@ -20,6 +19,7 @@ include 'inc/header.inc.php';
           $j ++;
     }
   }
+    loadLengSistem();
   ?>
   </section>
   <aside>

@@ -5,12 +5,12 @@ function Slide()  // Функция показа/cкрытия панели
 	{
 		document.getElementById('right_small_div').style.marginLeft= "257px"; // сдвиг блока вправо
 		Shown = true;
-		document.getElementById('SlideButton').src= "images/close.png";
+		$('#SlideButton').text("CLOSE");
 	}
 	else
 	{
 		document.getElementById('right_small_div').style.marginLeft = "0px"; // сдвиг блока обратно - влево
 		Shown = false;
-		document.getElementById('SlideButton').src= "images/feedback.png";
+		$('#SlideButton').text("REGISTRATION");
 	}
 }

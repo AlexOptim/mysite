@@ -13,7 +13,7 @@ include 'inc/header.inc.php';
 	  $dateReg = $_POST['dateReg'];
 	  $dateLog = $_POST['dateLog'];
 	  $Roll = $_POST['Roll'];
-	  if (isset($login) and isset($password) and isset($passwordRep) and isset($email) and $password != ''){
+	  if (isset($login) and isset($password) and isset($passwordRep) and isset($email) and $password != '' and $login != '' and $email != ''){
 		if ($password != $passwordRep){
 		  echo mt('Passwords do not match');
 		  }else{

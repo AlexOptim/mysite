@@ -51,21 +51,16 @@ for($z = 0; $z < ($to - $from); $z++)
     <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span><br>
   	$bod<br>";
       $r = 0;
-    if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-       foreach($db->query("SELECT * FROM users") as $row) {
-    if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']){
-      $r = 1; 
-  }}
+    if(isset($_SESSION['login'])){ 
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
-      if($r == 1 && $_SESSION['login'] == $avtor){ 
+      if($_SESSION['login'] == $avtor){ 
         echo "
   			<a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
         <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
     			";
        }else{
-        if($r == 1 && $roll == 'admin'){
+        if($roll == 'admin'){
           echo "
         <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
         <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
@@ -73,7 +68,7 @@ for($z = 0; $z < ($to - $from); $z++)
         }
        }
      }
-    echo "<a href='page.php?leng={$_SESSION['leng']}'&idart=$idart' class='readMore'>", mt('Read More'), "</a><br>";
+    echo "<a href='page.php?idart=$idart' class='readMore'>", mt('Read More'), "</a><br>";
   	echo "</div>";
 }
 

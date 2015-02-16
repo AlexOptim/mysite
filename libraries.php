@@ -17,8 +17,69 @@ function dbAdd($titleeng, $bodyeng, $titleukr, $bodyukr, $date, $autor, $db){
 	$result = $db->exec("INSERT INTO articles (titleeng, bodyeng, titleukr, bodyukr, date, autor) 
                         values ('$titleeng', '$bodyeng', '$titleukr', '$bodyukr', '$date', '$autor')");
 	$insertId = $db->lastInsertId();
-	//echo $insertId;    
 }
+/*************for translite******************/
+function mt($word){
+  $ses = $_SESSION['leng'];
+  $db = dbConnect();
+  foreach($db->query("SELECT original, $ses FROM sistemLeng WHERE original = '$word'") as $row) {
+  return $word = $row["$ses"];
+  }
+}
+function saveLengSistem($original, $eng, $ukr, $db){
+  $stmt = $db->prepare("UPDATE sistemLeng SET eng=?, ukr=? WHERE original=?");
+  $stmt->execute(array($eng, $ukr, $original));
+  $affected_rows = $stmt->rowCount();
+}
+function loadLengSistem(){
+  $db = dbConnect();
+  $i = 0;
+  echo "<form action='' method='POST'>
+   <p>_________Original_____________________eng_____________________________ukr<br></p>";
+  foreach($db->query("SELECT * FROM sistemLeng") as $row) {
+    echo "
+   <p><label class='lengLabel'>{$row['original']}</label>
+    <input type='hidden'  name='original", $i, "' value='",$row['original'] ,"'>
+    <input type='text' size='30' name='eng", $i, "' value='",$row['eng'] ,"'>................
+    <input type='text' size='30' name='ukr", $i, "' value='",$row['ukr'] ,"'></p>";
+    $i ++;
+  }
+  echo "
+  <input type='hidden'  name='i' value='",$i ,"'>
+  <p><input type='submit' value='", mt('Save'), "'></p>
+  </form>";
+}
+/*************for translite******************/
+/***************login************/
+function addm($db){
+if(isset($_POST['go'])){
+  $login = $_POST['login'];
+  foreach($db->query("SELECT * FROM users WHERE login='$login'") as $row){
+    if($row['password'] == md5($_POST['passwd'])){
+      $_SESSION['login'] = $_POST['login'];
+    }
+  }
+}
+if(!isset($_SESSION['login'])){
+  echo 
+  "<div id='login'>
+  <form method='POST'>
+    ", mt('Login'), ": <input type=text name=login value=''>
+    ", mt('Password'), ": <input type=password name=passwd>
+    <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
+  </form>
+  <a href='reg.php'>", mt('Registration'), "</a>
+  </div>";
+}else{
+  $idart = chekID($_SESSION['login'], $db);
+  echo "
+  <div id='login'>
+  ", mt('Profil'), ": <a href='profil.php?idart=$idart'>", $_SESSION['login'], "</a>
+  <a href='logout.php'>", mt('Logout'), "</a>
+  </div>";
+}
+}
+/***************login************/
 function userReg($login, $password, $email, $avatar, $dateReg, $dateLog, $Roll, $db){
   $p = 0;  
   foreach($db->query("SELECT * FROM users") as $row) {
@@ -38,7 +99,6 @@ function userReg($login, $password, $email, $avatar, $dateReg, $dateLog, $Roll, 
     $result = $db->exec("INSERT INTO users (login, password, email, avatar, dateReg, dateLog, Roll) 
                       values ('$login', '$password', '$email', '$avatar', '$dateReg', '$dateLog', '$Roll')");
   $_SESSION['login'] = $login;
-  $_SESSION['passwd'] = $password;
   echo mt('You registered'), "!";
   header("refresh: 2; url='index.php'");
   exit; 
@@ -58,38 +118,40 @@ function articleDbRead($idart, $db){
       echo "
     	<div class='article'>
     	<h2>{$row[$title]}</h2>
-    	<span class='date'>{$row['date']}</span>
+      <span class='date'>{$row['date']}</span>
       <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span>
-      <span class='raitings'>", ratingRead($idart, $db), "</span><br>
-    	{$row[$body]}<br>
-      ";
-      $r = 0;
-    if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-       foreach($db->query("SELECT * FROM users") as $row) {
-    if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']){$r = 1;}}
+    	{$row[$body]}<br>";
+  if(isset($_SESSION['login'])){
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
-      if($r == 1 && $_SESSION['login'] == $avtor){ 
-        echo "
-        <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
-        <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
+      if($_SESSION['login'] == $avtor){ 
+        echo 
+        ratingWrite($idart, $db) ,"
+      <span class='raitings'>", ratingRead($idart, $db), "</span><br>
+      <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+      <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
           ";
        }else{
-        if($r == 1 && $roll == 'admin'){
+        if($roll == 'admin'){
           echo "
         <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
         <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
           ";
         }
        }
-        if($r == 1){
-        ratingWrite($idart, $db);
-      }
-    }  
-
+ }
     	echo "</div>";
-      if($r == 1){
+          if($_SERVER['REQUEST_METHOD'] == 'POST'){
+      if( isset($_POST['titlecomment']) or isset($_POST['bodycomment'])){
+      $titlecomment = $_POST['titlecomment'];
+      $bodycomment = $_POST['bodycomment'];
+      $ids = $_POST['ids'];
+      $autorcomment = $_POST['autorcomment'];
+      $datecomment = $_POST['datecomment'];
+      addComents($titlecomment, $bodycomment, $ids, $autorcomment, $datecomment, $_SESSION['leng']);
+    }
+  }
+      if(isset($_SESSION['login'])){
         echo "
       <div id='comments'>
       <h2>", mt('Comments'), "</h2>
@@ -110,16 +172,6 @@ function articleDbRead($idart, $db){
       ", showComments($idart, $_SESSION['leng']),"
       </div>";
 	}
-    if($_SERVER['REQUEST_METHOD'] == 'POST'){
-      if( isset($_POST['titlecomment']) or isset($_POST['bodycomment'])){
-      $titlecomment = $_POST['titlecomment'];
-      $bodycomment = $_POST['bodycomment'];
-      $ids = $_POST['ids'];
-      $autorcomment = $_POST['autorcomment'];
-      $datecomment = $_POST['datecomment'];
-      addComents($titlecomment, $bodycomment, $ids, $autorcomment, $datecomment, $_SESSION['leng']);
-    }
-  }
   }
 }
 /********************ratings****************************/
@@ -144,6 +196,14 @@ function ratingWrite($idart, $db){
   $aut = 0;
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
+  if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['rat'])) {
+  $rat = $_POST['rat'];
+  $log = $_SESSION['login'];
+  echo mt('Thank you for your vote'), "!";
+  $result = $db->exec("INSERT INTO ratings (idarticles, ratingart, ratingautor) 
+                      values ('$idart', '$rat', '$log')");
+
+    }
   foreach($db->query("SELECT * FROM ratings WHERE idarticles=$idart") as $row) {
     if($_SESSION['login'] == $row['ratingautor']){
       $aut = 1;
@@ -178,14 +238,6 @@ function ratingWrite($idart, $db){
 </span>
 </form>
   ";
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['rat'])) {
-  $rat = $_POST['rat'];
-  $log = $_SESSION['login'];
-  echo mt('Thank you for your vote'), "!";
-  $result = $db->exec("INSERT INTO ratings (idarticles, ratingart, ratingautor) 
-                      values ('$idart', '$rat', '$log')");
-
-    }
   }
 }
 /********************ratings****************************/
@@ -237,7 +289,7 @@ function showComments($idcoment, $leng){
       <span class='date'>{$row['datecomment']}</span>
       <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autorcomment']}</a></span><br>
       {$row['bodycomment']}<br>";
-    if ($_SESSION['reg'] == 1){ 
+    if (isset($_SESSION['login'])){ 
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
       if($roll == 'admin'){ 
@@ -289,7 +341,7 @@ function showAllComments($idcoment, $leng){
       <span class='date'>{$row['datecomment']}</span>
       <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autorcomment']}</a></span><br>
       {$row['bodycomment']}<br>";
-    if ($_SESSION['reg'] == 1){ 
+    if (isset($_SESSION['login'])){ 
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
       if($roll == 'admin'){ 
@@ -302,19 +354,13 @@ function showAllComments($idcoment, $leng){
   }
 }
 function addArt($db){
-      $r = 0;
-    if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-       foreach($db->query("SELECT * FROM users") as $row) {
-    if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd']){$r=1;}}
-  if($r == 1){
+  if(isset($_SESSION['login'])){
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
       if ($roll == 'redactor' or $roll == 'admin'){
       echo "<a href='index.php?id=articleAdd' class='aButton'>", mt('Add article'), "</a>";
      }
    }
-  }
 }
 //ф-я для очищення і захисту введених даних
 function cleanStr($data){
@@ -326,156 +372,19 @@ function addDateLog($idus, $dateL, $db){
   $affected_rows = $stmt->rowCount();
 }
 //ф-я для очищення і захисту введених даних
-/***************login************/
-function addm($db){
-  if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-    $r = 0;
-   foreach($db->query("SELECT * FROM users") as $row) {
-      if($row['login'] == $_SESSION['login'] 
-      && $row['password'] == $_SESSION['passwd']){
-        $r = 1;
-        $user = $row['login'];
-        $idart = $row['id'];
-        $roll = $row['Roll'];
-        $dateL = date('d-m-Y');
-      }}
-        if ($r == 1){
-          if($roll == 'bloked'){
-           include 'bOut.php';
-           exit;
-        }else{
-      addDateLog($idart, $dateL, $db);
-      echo "
-      <div id='login'>
-      ", mt('Profil'), ": <a href='profil.php?idart=$idart'>$user</a>
-      <a href='logout.php'>", mt('Logout'), "</a>
-      </div>";
-      }
-    }
-    else {
-     if (!isset($_POST['go'])){
-      echo "
-      <div id='login'>
-      <form method='POST'>
-        ", mt('Login'), ": <input type=text name=login value='{$_SESSION['login']}'>
-        ", mt('Password'), ": <input type=password name=passwd>
-        <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
-      </form>
-      <a href='reg.php'>", mt('Registration'), "</a>
-      </div>";
-      } else {
-       $_SESSION['login']=$_POST['login']; 
-       $_SESSION['passwd']=md5($_POST['passwd']); 
-        $r = 0;
-     foreach($db->query("SELECT * FROM users") as $row) {
-        if($row['login'] == $_SESSION['login'] 
-        && $row['password'] == $_SESSION['passwd']){$r = 1;
-        $idart = $row['id'];
-        $user = $row['login'];
-        $roll = $row['Roll'];
-        $dateL = date('d-m-Y');
-      }}
-        if ($r == 1)
-        if($roll == 'bloked'){
-          include 'bOut.php';
-          exit;
-        }else{
-      addDateLog($idart, $dateL, $db);
-                  echo "
-      <div id='login'>
-      ", mt('Profil'), ": <a href='profil.php?idart=$idart'>$user</a>
-      <a href='logout.php'>", mt('Logout'), "</a>
-      </div>";
-          }
-    else {
-        echo "
-          <div id='login'>
-          <form method='POST'>
-            ", mt('Login'), ": <input type=text name=login value='{$_SESSION['login']}'>
-            ", mt('Password'), ": <input type=password name=passwd>
-            <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
-          </form>
-          <a href='reg.php'>", mt('Registration'), "</a>
-          </div>";
-        echo "<div id='example'><br>", mt('Wrong input, try again'), "<br></div>";
-          }
-        }
-      }
-  }                       
-  else {
-if (!isset($_POST['go'])){
-  echo "
-  <div id='login'>
-  <form method='POST'>
-    ", mt('Login'), ": <input type=text name=login>
-    ", mt('Password'), ": <input type=password name=passwd>
-    <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
-  </form>
-  <a href='reg.php'>", mt('Registration'), "</a>
-  </div>";
-}else {
-   $_SESSION['login']=$_POST['login']; 
-   $_SESSION['passwd']=md5($_POST['passwd']); 
-   $r = 0;
-     foreach($db->query("SELECT * FROM users") as $row) {
-        if($row['login'] == $_SESSION['login'] 
-        && $row['password'] == $_SESSION['passwd']){
-        $r = 1;
-        $_SESSION['reg'] = 1;
-        $idart = $row['id'];
-        $user = $row['login'];
-        $roll = $row['Roll'];
-        $dateL = date('d-m-Y');
-      }}
-        if ($r == 1)          
-          if($roll == 'bloked'){
-           include 'bOut.php';
-          exit;
-        }else{
-      addDateLog($idart, $dateL, $db);
-                  echo "
-      <div id='login'>
-      ", mt('Profil'), ": <a href='profil.php?idart=$idart'>$user</a>
-      <a href='logout.php'>", mt('Logout'), "</a>
-      </div>";
-          }
-  else {
-    echo "
-  <div id='login'>
-  <form method='POST'>
-    ", mt('Login'), ": <input type=text name=login value='{$_SESSION['login']}'>
-    ", mt('Password'), ": <input type=password name=passwd>
-    <input class='loginB' type=submit name=go value='",mt('GO') ,"'>
-  </form>
-  <a href='reg.php'>", mt('Registration'), "</a>
-  </div>";
-      echo "<div id='example'><br>", mt('Wrong input, try again'), "<br></div>";
-   }
- }   
-}       
-}
-/***************login************/
 function writeOllProf($db){
  echo "<div class='article'>";
  foreach($db->query("SELECT id, login, email FROM users") as $row) {
     $idart = $row['id'];
   echo "
       <a href='profil.php?idart=$idart'>{$row['login']}</a>";
-      $r = 0;
-    if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-       foreach($db->query("SELECT * FROM users") as $row) {
-    if($row['login'] == $_SESSION['login'] 
-    && $row['password'] == $_SESSION['passwd'] 
-    && $row['Roll'] == 'admin'){$r = 1;}}
-      if ($r == 1){
+      if (isset($_SESSION['login'])){
         echo "
       <span class='prof'>
       <a href='profilredag.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
       <a href='index.php?idart=$idart&id=deleteprof'>", mt('Delete'), "</a>
       </span><br>";
        }  
-    }   
-
  }
  echo "</div>"; 
 }
@@ -490,15 +399,8 @@ echo "
     <p>",mt('Last login date') ,": {$row['dateLog']}</p>";
     $email = $row['email'];
     $rolUser = $row['Roll'];
-   $r = 0;
-  if (isset($_SESSION['login']) and isset($_SESSION['passwd'])){ 
-     foreach($db->query("SELECT * FROM users") as $row) {
-  if($row['login'] == $_SESSION['login'] 
-  && $row['password'] == $_SESSION['passwd']){
-    $r = 1;
-    $idu=$row['id'];
-  }}
-    if ($r == 1){
+    if(isset($_SESSION['login'])){
+    $idu = chekId($_SESSION['login']);
       echo "
     <p>Email: $email</p><br>";
       $log = $_SESSION['login'];
@@ -511,7 +413,6 @@ echo "
       <a href='index.php?idart=$idart&id=deleteprof'>", mt('Delete'), "</a>
     </span>";}
      }  
-  }   
  }
 }
 function profRedag($login, $avatar, $surname, $name, $email, $roll, $idart, $db){
@@ -530,36 +431,4 @@ function chekId($log){
   return $id = $row['id'];
  }
 }
-/*************for translite******************/
-function mt($word){
-  $ses = $_SESSION['leng'];
-  $db = dbConnect();
-  foreach($db->query("SELECT original, $ses FROM sistemLeng WHERE original = '$word'") as $row) {
-  return $word = $row["$ses"];
-  }
-}
-function saveLengSistem($original, $eng, $ukr, $db){
-  $stmt = $db->prepare("UPDATE sistemLeng SET eng=?, ukr=? WHERE original=?");
-  $stmt->execute(array($eng, $ukr, $original));
-  $affected_rows = $stmt->rowCount();
-}
-function loadLengSistem(){
-  $db = dbConnect();
-  $i = 0;
-  echo "<form action='' method='POST'>
-   <p>_________Original_____________________eng_____________________________ukr<br></p>";
-  foreach($db->query("SELECT * FROM sistemLeng") as $row) {
-    echo "
-   <p><label class='lengLabel'>{$row['original']}</label>
-    <input type='hidden'  name='original", $i, "' value='",$row['original'] ,"'>
-    <input type='text' size='30' name='eng", $i, "' value='",$row['eng'] ,"'>................
-    <input type='text' size='30' name='ukr", $i, "' value='",$row['ukr'] ,"'></p>";
-    $i ++;
-  }
-  echo "
-  <input type='hidden'  name='i' value='",$i ,"'>
-  <p><input type='submit' value='", mt('Save'), "'></p>
-  </form>";
-}
-/*************for translite******************/
 ?>
