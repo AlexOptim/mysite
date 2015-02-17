@@ -80,7 +80,7 @@ for($j = 0; $j < $col_str; $j++)
  $new_from = $j*$col_article;
  $new_to = $new_from + $col_article;
  if($from/$col_article != ($number-1)){
- 	echo "<a href='../mysite/index.php?leng={$_SESSION['leng']}'&from=$new_from>$number</a>";
+ 	echo "<a href='", $_SERVER['SCRIPT_NAME'], "?from=$new_from'>$number</a>";
  }else{
  	echo '<span>'.$number.' </span>';
  }

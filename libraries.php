@@ -55,10 +55,21 @@ function addm($db){
 if(isset($_POST['go'])){
   $login = $_POST['login'];
   foreach($db->query("SELECT * FROM users WHERE login='$login'") as $row){
-    if($row['password'] == md5($_POST['passwd'])){
+    if(isset($row['login'])){
+      if($row['password'] == md5($_POST['passwd'])){
+        $r = $row['login'];
+        $rol = chekRoll($r, $db);
+        if($rol != 'bloked'){
       $_SESSION['login'] = $_POST['login'];
+      }else{
+        header('Location: bOut.php');
+      }
+    }
     }
   }
+  if(!isset($_SESSION['login'])){
+  echo "<span id='example'>", mt('Wrong input, try again'), "!</span>";
+}
 }
 if(!isset($_SESSION['login'])){
   echo 
@@ -122,13 +133,13 @@ function articleDbRead($idart, $db){
       <span class='autor'><a href='profil.php?idart=$idavt'>{$row['autor']}</a></span>
     	{$row[$body]}<br>";
   if(isset($_SESSION['login'])){
+      echo ratingWrite($idart, $db) ,"
+      <span class='raitings'>", ratingRead($idart, $db), "</span><br>";
   $l = $_SESSION['login'];
   $roll = chekRoll($l, $db);
       if($_SESSION['login'] == $avtor){ 
         echo 
-        ratingWrite($idart, $db) ,"
-      <span class='raitings'>", ratingRead($idart, $db), "</span><br>
-      <a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+      "<a href='index.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
       <a href='index.php?idart=$idart&id=deleteart'>", mt('Delete'), "</a>
           ";
        }else{
@@ -379,12 +390,16 @@ function writeOllProf($db){
   echo "
       <a href='profil.php?idart=$idart'>{$row['login']}</a>";
       if (isset($_SESSION['login'])){
+        $p = $_SESSION['login'];
+        $roll = chekRoll($p, $db);
+        if($roll == 'admin'){
         echo "
       <span class='prof'>
-      <a href='profilredag.php?idart=$idart&id=redagart'>", mt('Edit'), "</a>
+      <a href='index.php?idart=$idart&id=redagprof'>", mt('Edit profile'), "</a>
       <a href='index.php?idart=$idart&id=deleteprof'>", mt('Delete'), "</a>
       </span><br>";
        }  
+     }
  }
  echo "</div>"; 
 }
@@ -409,7 +424,7 @@ echo "
       echo "
     <p>", mt('Roll'), ": $rolUser</p><br>
     <span class='profButtons'>
-      <a href='profilredag.php?idart=$idart&id=redagart'>", mt('Edit profile'), "</a>
+      <a href='index.php?idart=$idart&id=redagprof'>", mt('Edit profile'), "</a>
       <a href='index.php?idart=$idart&id=deleteprof'>", mt('Delete'), "</a>
     </span>";}
      }  

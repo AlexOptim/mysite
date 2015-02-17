@@ -21,11 +21,8 @@ include 'inc/header.inc.php';
     $roll = $_POST['roll'];
     @$tupe = $_POST['tupe'];
     @$idart = $_POST['idart'];
-       // Проверяем загружен ли файл
    if(is_uploaded_file($_FILES["avatar"]["tmp_name"]))
    {
-     // Если файл загружен успешно, перемещаем его
-     // из временной директории в конечную
      move_uploaded_file($_FILES["avatar"]["tmp_name"], "avatars/".$_FILES["avatar"]["name"]);
      $avatar = "avatars/".$_FILES["avatar"]["name"];
    } else {
@@ -35,17 +32,6 @@ include 'inc/header.inc.php';
      if($tupe == 'r'){
       profRedag($login, $avatar, $surname, $name, $email, $roll, $idart, $db);
      }
-
-
-    //add on DB
-    /*switch ($tupe){ 
-      case 'r':
-        dbRedag($title, $body, $createData, $_SESSION['login'], $idart, $db);
-        break;
-      default:
-        dbAdd($title, $body, $createData, $_SESSION['login'], $db);
-    }*/
-    //add on DB
     }
 
 

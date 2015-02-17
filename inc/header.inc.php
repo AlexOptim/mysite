@@ -17,6 +17,9 @@ $db = dbConnect();
 if($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_SESSION['login'])){
 	$r = 1;
 }
+if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_SESSION['login'])){
+	$r = 1;
+}
 if ($r == 1){
 	@$id = strtolower(cleanStr($_GET['id']));
 	}
@@ -59,7 +62,7 @@ if ($r == 1){
 	if(isset($_SESSION['login'])){
 		$ml = $_SESSION['login'];
 	if(chekRoll($ml, $db) == 'admin'){
-	echo "<li><a href='lengEdit.php?leng={$_SESSION['leng']}'>", mt('Menu tab3'), "</a></li>";
+	echo "<li><a href='index.php?id=lengedit&leng={$_SESSION['leng']}'>", mt('Menu tab3'), "</a></li>";
 		}
 	}
 	?>

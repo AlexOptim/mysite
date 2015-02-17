@@ -17,6 +17,10 @@ include 'inc/header.inc.php';
 			include 'inc/deleteRait.inc.php'; break;
 		case 'deleteraitall':
 			include 'inc/deleteRaitAll.inc.php'; break;
+		case 'lengedit':
+			include 'inc/lengEdit.inc.php'; break;
+		case 'redagprof':
+			include 'inc/profilredag.inc.php'; break;
 		default: include 'inc/index.inc.php';
 	}
 ?>
